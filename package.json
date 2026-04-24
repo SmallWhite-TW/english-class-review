@@ -1,0 +1,36 @@
+{
+  "name": "english-class-review",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Weekly English class review site for White and Dave. Static site hosted on GitHub Pages with Cloudflare Worker for progress sync.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "typecheck": "astro check && tsc --noEmit",
+    "migrate:lessons": "tsx scripts/migrate-lessons.ts",
+    "extract:vocabulary": "tsx scripts/extract-vocabulary.ts",
+    "validate:content": "tsx scripts/validate-content.ts",
+    "worker:dev": "cd worker && wrangler dev",
+    "worker:deploy": "cd worker && wrangler deploy"
+  },
+  "dependencies": {
+    "astro": "^5.1.0",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@cloudflare/workers-types": "^4.20250101.0",
+    "@types/node": "^22.10.5",
+    "pagefind": "^1.3.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "wrangler": "^3.100.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

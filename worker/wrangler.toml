@@ -1,0 +1,37 @@
+# Cloudflare Worker for English Class Review progress sync.
+# Deployed via `wrangler deploy` from this directory, or by GitHub Actions.
+#
+# Required secrets (set with `wrangler secret put <NAME>`):
+#   WHITE_PROFILE_SECRET  — shared secret for the White profile
+#   DAVE_PROFILE_SECRET   — shared secret for the Dave profile
+#
+# Required KV namespace:
+#   PROGRESS_KV — create with `wrangler kv namespace create PROGRESS_KV`
+#
+# CORS origin is set here as a non-secret variable. Update if the Pages URL changes.
+
+name = "english-class-progress"
+main = "src/index.ts"
+compatibility_date = "2026-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+# -----------------------------------------------------------------------------
+# Default (production) environment
+# -----------------------------------------------------------------------------
+
+[vars]
+ALLOWED_ORIGIN = "https://smallwhite-tw.github.io"
+API_VERSION = "v1"
+
+# Replace id with the value from your Cloudflare dashboard (CF_KV_NAMESPACE_ID).
+# preview_id can point to a second namespace for `wrangler dev` sessions.
+[[kv_namespaces]]
+binding = "PROGRESS_KV"
+id = "b90d176e1a734731a1bd3322ed08e77b"
+
+# -----------------------------------------------------------------------------
+# Observability
+# -----------------------------------------------------------------------------
+
+[observability]
+enabled = true
