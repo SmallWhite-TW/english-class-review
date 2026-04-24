@@ -1,0 +1,73 @@
+---
+import type { TopicMeta } from '../../types/content.js';
+
+interface Props {
+  topic: TopicMeta;
+  compact?: boolean;
+}
+
+const { topic, compact = false } = Astro.props;
+---
+
+<span
+  class:list={['topic-progress', compact && 'topic-progress--compact']}
+  data-topic-id={topic.topicId}
+  data-lesson-id={topic.lessonId}
+  data-review-slug={topic.reviewSlug}
+>
+  <label class="reviewed-label">
+    <input type="checkbox" data-role="reviewed" />
+    <span class="label-text">已複習</span>
+  </label>
+  {!compact && (
+    <label class="confidence-label">
+      掌握度
+      <select data-role="confidence">
+        <option value="">—</option>
+        <option value="1">1 · 不熟</option>
+        <option value="2">2</option>
+        <option value="3">3 · 普通</option>
+        <option value="4">4</option>
+        <option value="5">5 · 熟練</option>
+      </select>
+    </label>
+  )}
+</span>
+
+<style>
+  .topic-progress {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+  .topic-progress--compact {
+    gap: 0.25rem;
+    font-size: 0.75rem;
+  }
+  .topic-progress input[type='checkbox'] {
+    accent-color: var(--accent);
+    width: 1rem;
+    height: 1rem;
+  }
+  .topic-progress select {
+    background: #1e2130;
+    color: var(--fg);
+    border: 1px solid #2a2e38;
+    border-radius: 4px;
+    padding: 0.2rem 0.4rem;
+    font-family: inherit;
+    font-size: 0.875rem;
+  }
+  .reviewed-label,
+  .confidence-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+  }
+  .topic-progress--compact .label-text {
+    display: none;
+  }
+</style>

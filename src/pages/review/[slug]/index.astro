@@ -1,0 +1,198 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TopicProgress from '../../../components/progress/TopicProgress.astro';
+import { parseTopicMeta } from '../../../lib/content/parse-topics.js';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('review', (e) => e.data.published);
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const topics = parseTopicMeta(entry.data.lessonId, entry.data.slug, entry.body ?? '');
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+---
+
+<BaseLayout title={entry.data.title}>
+  <nav class="breadcrumb">
+    <a href={base}>← 所有 Lessons</a>
+    <span class="sep">/</span>
+    <a href={`${base}lessons/${entry.data.lessonId}/`}>{entry.data.lessonId}</a>
+  </nav>
+
+  <article class="review"
+    data-lesson-id={entry.data.lessonId}
+    data-review-slug={entry.data.slug}
+    data-topic-ids={topics.map((t) => t.topicId).join(',')}>
+    <header class="review-header">
+      <small>複習 · {entry.data.lessonId}</small>
+      <h1>{entry.data.title}</h1>
+      {topics.length > 0 && (
+        <div class="overall-progress">
+          <div class="progress-bar"><div class="progress-fill" id="review-progress-fill" style="width: 0%"></div></div>
+          <span id="review-progress-label">尚未開始</span>
+        </div>
+      )}
+    </header>
+
+    {topics.length > 0 && (
+      <aside class="topic-toc">
+        <h2>Topics</h2>
+        <ol>
+          {topics.map((topic) => (
+            <li>
+              <a href={`#topic-${topic.index}`}>{topic.title}</a>
+              <TopicProgress topic={topic} compact={true} />
+            </li>
+          ))}
+        </ol>
+      </aside>
+    )}
+
+    <div class="review-body markdown">
+      <Content />
+    </div>
+
+    {topics.length > 0 && (
+      <section class="topic-controls">
+        <h2>Topic 進度記錄</h2>
+        <ul class="topic-list">
+          {topics.map((topic) => (
+            <li id={`topic-${topic.index}`}>
+              <div class="topic-row">
+                <strong>Topic {topic.index}：{topic.title}</strong>
+                <TopicProgress topic={topic} />
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<script>
+  import { initTopicProgressUi } from '../../../lib/progress/topic-progress-ui';
+  initTopicProgressUi();
+</script>
+
+<style>
+  .breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+  .sep {
+    margin: 0 0.25rem;
+    color: var(--muted);
+  }
+  .review-header small {
+    color: var(--muted);
+  }
+  .overall-progress {
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #23262c;
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 320px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.2s ease;
+  }
+  .topic-toc {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    background: #151821;
+    border: 1px solid #23262c;
+    border-radius: 8px;
+  }
+  .topic-toc h2 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .topic-toc ol {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+  .topic-toc li {
+    margin: 0.3rem 0;
+  }
+  .topic-controls {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #23262c;
+  }
+  .topic-list {
+    list-style: none;
+    padding: 0;
+  }
+  .topic-list li {
+    padding: 0.75rem 1rem;
+    background: #151821;
+    border: 1px solid #23262c;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+  }
+  .topic-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .markdown :global(h1) {
+    font-size: 1.75rem;
+  }
+  .markdown :global(h2) {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #23262c;
+  }
+  .markdown :global(h3) {
+    margin-top: 1.25rem;
+    color: var(--accent);
+  }
+  .markdown :global(code) {
+    background: #1e2130;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  .markdown :global(pre) {
+    background: #1e2130;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  .markdown :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--muted);
+    margin-left: 0;
+  }
+  .markdown :global(ul) {
+    line-height: 1.8;
+  }
+  .markdown :global(a) {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { VocabularyEntry } from '../../types/content.js';
+import vocabularyData from '../../content/generated/vocabulary.json';
+
+const vocabulary = vocabularyData as VocabularyEntry[];
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+
+const byLesson = new Map<string, VocabularyEntry[]>();
+for (const entry of vocabulary) {
+  const list = byLesson.get(entry.lessonId) ?? [];
+  list.push(entry);
+  byLesson.set(entry.lessonId, list);
+}
+const lessonIds = Array.from(byLesson.keys()).sort();
+---
+
+<BaseLayout title="單字索引" description={`共 ${vocabulary.length} 條單字／片語`}>
+  <nav class="breadcrumb"><a href={base}>← 首頁</a></nav>
+
+  <h1>單字索引</h1>
+  <p class="meta">共 <strong>{vocabulary.length}</strong> 條 · 涵蓋 {lessonIds.length} 堂課</p>
+
+  <div class="controls">
+    <input
+      type="search"
+      id="vocab-search"
+      placeholder="搜尋英文、中文或片語…"
+      autocomplete="off"
+    />
+    <select id="vocab-lesson-filter">
+      <option value="">所有 Lesson</option>
+      {lessonIds.map((id) => <option value={id}>{id}</option>)}
+    </select>
+    <select id="vocab-section-filter">
+      <option value="">所有類別</option>
+      <option value="關鍵單字／片語">關鍵單字／片語</option>
+      <option value="更自然的說法">更自然的說法</option>
+      <option value="補充例句">補充例句</option>
+      <option value="other">其他</option>
+    </select>
+  </div>
+
+  <p class="result-count" id="result-count">{vocabulary.length} 條</p>
+
+  <ul id="vocab-list" class="vocab-list">
+    {vocabulary.map((entry) => (
+      <li
+        class="vocab-item"
+        data-term={entry.term.toLowerCase()}
+        data-meaning={(entry.meaningZh ?? '').toLowerCase()}
+        data-lesson-id={entry.lessonId}
+        data-section={entry.section}
+      >
+        <div class="vocab-main">
+          <code class="term">{entry.term}</code>
+          {entry.meaningZh && <span class="meaning">{entry.meaningZh}</span>}
+        </div>
+        <div class="vocab-meta">
+          <a href={`${base}review/${entry.reviewSlug}/`}>{entry.lessonId}</a>
+          {entry.topicTitle && <span class="topic">{entry.topicTitle}</span>}
+          <span class="section">{entry.section}</span>
+        </div>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
+
+<script>
+  const search = document.getElementById('vocab-search') as HTMLInputElement | null;
+  const lessonFilter = document.getElementById('vocab-lesson-filter') as HTMLSelectElement | null;
+  const sectionFilter = document.getElementById('vocab-section-filter') as HTMLSelectElement | null;
+  const list = document.getElementById('vocab-list');
+  const count = document.getElementById('result-count');
+
+  function applyFilters() {
+    if (!list) return;
+    const q = (search?.value ?? '').trim().toLowerCase();
+    const lesson = lessonFilter?.value ?? '';
+    const section = sectionFilter?.value ?? '';
+
+    let visible = 0;
+    list.querySelectorAll<HTMLElement>('.vocab-item').forEach((item) => {
+      const term = item.dataset.term ?? '';
+      const meaning = item.dataset.meaning ?? '';
+      const itemLesson = item.dataset.lessonId ?? '';
+      const itemSection = item.dataset.section ?? '';
+
+      const matchesQ = q === '' || term.includes(q) || meaning.includes(q);
+      const matchesLesson = lesson === '' || itemLesson === lesson;
+      const matchesSection = section === '' || itemSection === section;
+
+      const show = matchesQ && matchesLesson && matchesSection;
+      item.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    if (count) count.textContent = `${visible} 條`;
+  }
+
+  search?.addEventListener('input', applyFilters);
+  lessonFilter?.addEventListener('change', applyFilters);
+  sectionFilter?.addEventListener('change', applyFilters);
+</script>
+
+<style>
+  .breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+  .meta {
+    color: var(--muted);
+  }
+  .controls {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+  .controls input,
+  .controls select {
+    background: #151821;
+    color: var(--fg);
+    border: 1px solid #23262c;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-family: inherit;
+  }
+  .controls input {
+    flex: 1;
+    min-width: 200px;
+  }
+  .result-count {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+  .vocab-list {
+    list-style: none;
+    padding: 0;
+  }
+  .vocab-item {
+    padding: 0.75rem 1rem;
+    background: #151821;
+    border: 1px solid #23262c;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+  }
+  .vocab-main {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .term {
+    font-size: 1.05rem;
+    background: #1e2130;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+  .meaning {
+    color: var(--fg);
+  }
+  .vocab-meta {
+    margin-top: 0.3rem;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .vocab-meta a {
+    color: var(--muted);
+  }
+  .vocab-meta a:hover {
+    color: var(--accent);
+  }
+  .topic::before {
+    content: '· ';
+  }
+  .section::before {
+    content: '· ';
+  }
+</style>

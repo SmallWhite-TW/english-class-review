@@ -33,10 +33,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Extract vocabulary index
+        run: npm run extract:vocabulary
+
       - name: Build Astro site
         run: npm run build
         env:
           PUBLIC_WORKER_URL: ${{ secrets.PUBLIC_WORKER_URL }}
+          WHITE_PROFILE_SECRET: ${{ secrets.WHITE_PROFILE_SECRET }}
+          DAVE_PROFILE_SECRET: ${{ secrets.DAVE_PROFILE_SECRET }}
 
       - name: Build Pagefind search index
         run: npx pagefind --site dist

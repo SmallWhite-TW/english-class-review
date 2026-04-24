@@ -24,6 +24,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Extract vocabulary index
+        run: npm run extract:vocabulary
+
+      - name: Validate content
+        run: npm run validate:content
+
       - name: Typecheck
         run: npm run typecheck
 
@@ -31,6 +37,8 @@ jobs:
         run: npm run build
         env:
           PUBLIC_WORKER_URL: ${{ secrets.PUBLIC_WORKER_URL }}
+          WHITE_PROFILE_SECRET: ${{ secrets.WHITE_PROFILE_SECRET }}
+          DAVE_PROFILE_SECRET: ${{ secrets.DAVE_PROFILE_SECRET }}
 
   worker-typecheck:
     name: Worker Typecheck

@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+---
+
+<BaseLayout title="選擇 Profile">
+  <section>
+    <h1>選擇 Profile</h1>
+    <p>選擇一個 profile 來記錄你的學習進度。同一個 profile 在不同裝置間會自動同步。</p>
+    <div class="profile-grid">
+      <button type="button" class="profile-btn" data-profile="white">
+        <span class="name">White</span>
+        <span class="role">謝智宇</span>
+      </button>
+      <button type="button" class="profile-btn" data-profile="dave">
+        <span class="name">Dave</span>
+        <span class="role">老師</span>
+      </button>
+    </div>
+    <div class="current" id="current-status">未選擇</div>
+    <div class="actions">
+      <a href={base}>回首頁</a>
+      <button type="button" id="clear-btn" class="link-btn">清除選擇</button>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import {
+    clearActiveProfile,
+    getActiveProfile,
+    setActiveProfile,
+    PROFILE_DISPLAY,
+  } from '../../lib/profile/profile-store';
+
+  function updateStatus() {
+    const el = document.getElementById('current-status');
+    if (!el) return;
+    const active = getActiveProfile();
+    el.textContent = active
+      ? `目前使用 profile：${PROFILE_DISPLAY[active]}`
+      : '尚未選擇 profile';
+    document.querySelectorAll<HTMLButtonElement>('.profile-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.profile === active);
+    });
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.profile-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const profile = btn.dataset.profile;
+      if (profile === 'white' || profile === 'dave') {
+        setActiveProfile(profile);
+        updateStatus();
+      }
+    });
+  });
+
+  document.getElementById('clear-btn')?.addEventListener('click', () => {
+    clearActiveProfile();
+    updateStatus();
+  });
+
+  updateStatus();
+</script>
+
+<style>
+  .profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .profile-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 1.5rem 1rem;
+    background: #151821;
+    border: 2px solid #23262c;
+    border-radius: 8px;
+    color: inherit;
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+  .profile-btn:hover {
+    border-color: var(--accent);
+  }
+  .profile-btn.active {
+    border-color: var(--accent);
+    background: #1a2030;
+  }
+  .profile-btn .name {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  .profile-btn .role {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+  .current {
+    padding: 0.75rem 1rem;
+    background: #151821;
+    border: 1px solid #23262c;
+    border-radius: 6px;
+    color: var(--muted);
+  }
+  .actions {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0;
+  }
+  .link-btn:hover {
+    text-decoration: underline;
+  }
+</style>

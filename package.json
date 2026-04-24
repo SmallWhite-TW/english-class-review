@@ -5,9 +5,13 @@
   "type": "module",
   "description": "Weekly English class review site for White and Dave. Static site hosted on GitHub Pages with Cloudflare Worker for progress sync.",
   "scripts": {
+    "predev": "npm run extract:vocabulary",
     "dev": "astro dev",
     "start": "astro dev",
+    "prebuild": "npm run extract:vocabulary",
     "build": "astro build",
+    "build:full": "npm run extract:vocabulary && astro build && pagefind --site dist",
+    "pagefind": "pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
     "typecheck": "astro check && tsc --noEmit",

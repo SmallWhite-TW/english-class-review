@@ -1,24 +1,117 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import LessonCard from '../components/lesson/LessonCard.astro';
+import { getLessons } from '../lib/content/group-by-lesson.js';
+import { parseTopicMeta } from '../lib/content/parse-topics.js';
+
+const lessons = await getLessons();
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+
+const topicTotalsByLesson: Record<string, number> = {};
+for (const lesson of lessons) {
+  let total = 0;
+  for (const review of lesson.reviews) {
+    total += parseTopicMeta(review.data.lessonId, review.data.slug, review.body ?? '').length;
+  }
+  topicTotalsByLesson[lesson.lessonId] = total;
+}
 ---
 
-<BaseLayout
-  title="English Class Review"
-  description="White 與 Dave 的每週英文課預習與複習。"
->
-  <section>
+<BaseLayout title="English Class Review" description="每週英文課的預習與複習">
+  <section class="intro">
     <h1>English Class Review</h1>
-    <p>每週英文課的預習與複習。建置中。</p>
-    <ul>
-      <li>Lesson 列表（尚未建立）</li>
-      <li>Profile 切換（尚未建立）</li>
-      <li>進度追蹤（尚未建立）</li>
-      <li>搜尋（尚未建立）</li>
-    </ul>
-    <p>
-      Architecture: <a href="https://github.com/SmallWhite-TW/english-class-review/tree/main/docs/adr"
-        >docs/adr/</a
-      >
-    </p>
+    <p class="subtitle">每週英文課的預習與複習。選擇一堂課開始。</p>
+    <div class="profile-hint">
+      <span id="current-profile-label">目前 profile：載入中…</span>
+      <a href={`${base}profile/`}>切換</a>
+    </div>
   </section>
+
+  <section class="lessons">
+    <h2>Lessons</h2>
+    <ul class="lesson-grid">
+      {lessons.map((lesson) => <LessonCard lesson={lesson} />)}
+    </ul>
+  </section>
+
+  <section class="quick-links">
+    <h2>快速入口</h2>
+    <ul>
+      <li><a href={`${base}vocabulary/`}>單字索引</a></li>
+      <li><a href={`${base}search/`}>全文搜尋</a></li>
+    </ul>
+  </section>
+
+  <script
+    is:inline
+    id="lesson-topic-totals"
+    type="application/json"
+    set:html={JSON.stringify(topicTotalsByLesson)}
+  />
 </BaseLayout>
+
+<script>
+  import { getActiveProfile, PROFILE_DISPLAY } from '../lib/profile/profile-store';
+  import { initLessonCardProgress } from '../lib/progress/topic-progress-ui';
+
+  const label = document.getElementById('current-profile-label');
+  if (label) {
+    const profile = getActiveProfile();
+    label.textContent = profile
+      ? `目前 profile：${PROFILE_DISPLAY[profile]}`
+      : '目前 profile：尚未選擇';
+  }
+
+  const totalsEl = document.getElementById('lesson-topic-totals');
+  const totals: Record<string, number> = totalsEl?.textContent
+    ? JSON.parse(totalsEl.textContent)
+    : {};
+
+  initLessonCardProgress(totals);
+
+  window.addEventListener('progress:changed', () => {
+    initLessonCardProgress(totals);
+  });
+</script>
+
+<style>
+  .intro h1 {
+    margin-bottom: 0.25rem;
+  }
+  .subtitle {
+    color: var(--muted);
+    margin-top: 0;
+  }
+  .profile-hint {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: #151821;
+    border: 1px solid #23262c;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .lessons {
+    margin-top: 2rem;
+  }
+  .lesson-grid {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+  .quick-links {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #23262c;
+  }
+  .quick-links ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+  }
+</style>

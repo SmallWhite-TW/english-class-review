@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getLessons } from '../../../lib/content/group-by-lesson.js';
+
+export async function getStaticPaths() {
+  const lessons = await getLessons();
+  return lessons.map((lesson) => ({
+    params: { lessonId: lesson.lessonId },
+    props: { lesson },
+  }));
+}
+
+const { lesson } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+const title = lesson.reviews[0]?.data.title ?? lesson.preStudy[0]?.data.title ?? lesson.lessonId;
+---
+
+<BaseLayout title={`${lesson.lessonId} · ${title}`}>
+  <nav class="breadcrumb">
+    <a href={base}>← 所有 Lessons</a>
+  </nav>
+
+  <h1>
+    Lesson {String(lesson.lessonNo).padStart(3, '0')}
+  </h1>
+
+  {lesson.preStudy.length > 0 && (
+    <section>
+      <h2>預習 (pre-study)</h2>
+      <ul class="entry-list">
+        {lesson.preStudy.map((entry) => (
+          <li>
+            <a href={`${base}pre-study/${entry.data.slug}/`}>
+              <span class="entry-title">{entry.data.title}</span>
+              {entry.data.summary && <span class="entry-summary">{entry.data.summary}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {lesson.reviews.length > 0 && (
+    <section>
+      <h2>複習 (review)</h2>
+      <ul class="entry-list">
+        {lesson.reviews.map((entry) => (
+          <li>
+            <a href={`${base}review/${entry.data.slug}/`}>
+              <span class="entry-title">{entry.data.title}</span>
+              {entry.data.summary && <span class="entry-summary">{entry.data.summary}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {lesson.preStudy.length === 0 && lesson.reviews.length === 0 && (
+    <p class="empty">這堂課還沒有內容。</p>
+  )}
+</BaseLayout>
+
+<style>
+  .breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+  section {
+    margin-top: 2rem;
+  }
+  .entry-list {
+    list-style: none;
+    padding: 0;
+  }
+  .entry-list li {
+    margin-bottom: 0.5rem;
+  }
+  .entry-list a {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: #151821;
+    border: 1px solid #23262c;
+    border-radius: 6px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .entry-list a:hover {
+    border-color: var(--accent);
+  }
+  .entry-title {
+    display: block;
+    color: var(--fg);
+  }
+  .entry-summary {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+  .empty {
+    color: var(--muted);
+  }
+</style>

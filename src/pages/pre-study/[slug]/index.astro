@@ -1,0 +1,91 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('pre-study', (e) => e.data.published);
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+---
+
+<BaseLayout title={entry.data.title}>
+  <nav class="breadcrumb">
+    <a href={base}>← 所有 Lessons</a>
+    <span class="sep">/</span>
+    <a href={`${base}lessons/${entry.data.lessonId}/`}>{entry.data.lessonId}</a>
+  </nav>
+
+  <article>
+    <header class="entry-header">
+      <small>預習 · {entry.data.lessonId}</small>
+      <h1>{entry.data.title}</h1>
+      {entry.data.estimatedMinutes && (
+        <p class="meta">預估 {entry.data.estimatedMinutes} 分鐘</p>
+      )}
+    </header>
+    <div class="markdown">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+  .sep {
+    margin: 0 0.25rem;
+    color: var(--muted);
+  }
+  .entry-header small {
+    color: var(--muted);
+  }
+  .meta {
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+  .markdown :global(h1) {
+    font-size: 1.75rem;
+  }
+  .markdown :global(h2) {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #23262c;
+  }
+  .markdown :global(h3) {
+    margin-top: 1.25rem;
+    color: var(--accent);
+  }
+  .markdown :global(code) {
+    background: #1e2130;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  .markdown :global(pre) {
+    background: #1e2130;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  .markdown :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--muted);
+    margin-left: 0;
+  }
+  .markdown :global(ul) {
+    line-height: 1.8;
+  }
+</style>
