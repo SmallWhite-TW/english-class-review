@@ -13,7 +13,7 @@ const title = lesson.reviews[0]?.data.title ?? lesson.preStudy[0]?.data.title ??
 const lessonNoStr = String(lesson.lessonNo).padStart(3, '0');
 ---
 
-<li class="lesson-card">
+<li class="lesson-card" data-lesson-id={lesson.lessonId}>
   <a href={href}>
     <span class="lesson-card__corner lesson-card__corner--tl"></span>
     <span class="lesson-card__corner lesson-card__corner--tr"></span>

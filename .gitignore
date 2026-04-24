@@ -24,6 +24,7 @@ worker/dist/
 public/pagefind/
 
 # Build-time generated content indexes (produced by scripts/extract-*.ts)
+src/content/generated/items.json
 src/content/generated/vocabulary.json
 src/content/generated/search-documents.json
 

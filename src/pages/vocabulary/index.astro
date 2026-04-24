@@ -1,35 +1,52 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SpeakButton from '../../components/speech/SpeakButton.astro';
-import type { VocabularyEntry } from '../../types/content.js';
-import vocabularyData from '../../content/generated/vocabulary.json';
+import type { ReviewItem } from '../../types/content.js';
+import itemsData from '../../content/generated/items.json';
 
-const vocabulary = vocabularyData as VocabularyEntry[];
+const items = itemsData as ReviewItem[];
 const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 
-const byLesson = new Map<string, VocabularyEntry[]>();
-for (const entry of vocabulary) {
+const byLesson = new Map<string, ReviewItem[]>();
+for (const entry of items) {
   const list = byLesson.get(entry.lessonId) ?? [];
   list.push(entry);
   byLesson.set(entry.lessonId, list);
 }
 const lessonIds = Array.from(byLesson.keys()).sort();
+
+const typeCounts = {
+  vocabulary: items.filter((i) => i.type === 'vocabulary').length,
+  phrase: items.filter((i) => i.type === 'phrase').length,
+  sentence: items.filter((i) => i.type === 'sentence').length,
+  natural: items.filter((i) => i.type === 'natural').length,
+};
 ---
 
-<BaseLayout title="單字索引" description={`共 ${vocabulary.length} 條單字／片語`}>
+<BaseLayout title="Item Index" description={`共 ${items.length} 項可複習內容`}>
   <nav class="breadcrumb"><a href={base}>← 首頁</a></nav>
 
-  <h1 class="glitch" data-text="VOCABULARY">VOCABULARY</h1>
-  <p class="meta">共 <strong>{vocabulary.length}</strong> 條 · 涵蓋 {lessonIds.length} 堂課</p>
+  <h1 class="glitch" data-text="ITEM INDEX">ITEM INDEX</h1>
+  <p class="meta">
+    共 <strong>{items.length}</strong> 項 · 涵蓋 {lessonIds.length} 堂課
+    <span class="meta-divider">·</span>
+    <span class="meta-pill meta-pill--vocab">{typeCounts.vocabulary} words</span>
+    <span class="meta-pill meta-pill--phrase">{typeCounts.phrase} phrases</span>
+    <span class="meta-pill meta-pill--sentence">{typeCounts.sentence} sentences</span>
+    <span class="meta-pill meta-pill--natural">{typeCounts.natural} natural</span>
+  </p>
 
   <div class="view-tabs" role="tablist">
     <button type="button" class="view-tab is-active" data-view="list" role="tab" aria-selected="true">
-      <span class="corner"></span>LIST
+      LIST
     </button>
     <button type="button" class="view-tab" data-view="flashcard" role="tab" aria-selected="false">
-      <span class="corner"></span>FLASHCARD
+      FLASHCARD
     </button>
+    <a href={`${base}review-session/`} class="view-tab view-tab--link">
+      → SESSION
+    </a>
   </div>
 
   <div class="controls">
@@ -43,37 +60,37 @@ const lessonIds = Array.from(byLesson.keys()).sort();
       <option value="">所有 Lesson</option>
       {lessonIds.map((id) => <option value={id}>{id}</option>)}
     </select>
-    <select id="vocab-section-filter">
-      <option value="">所有類別</option>
-      <option value="關鍵單字／片語">關鍵單字／片語</option>
-      <option value="更自然的說法">更自然的說法</option>
-      <option value="補充例句">補充例句</option>
-      <option value="other">其他</option>
+    <select id="vocab-type-filter">
+      <option value="">所有類型</option>
+      <option value="vocabulary">單字 Vocabulary</option>
+      <option value="phrase">片語 Phrase</option>
+      <option value="sentence">例句 Sentence</option>
+      <option value="natural">更自然的說法 Natural</option>
     </select>
   </div>
 
-  <p class="result-count"><span id="result-count">{vocabulary.length}</span> 條</p>
+  <p class="result-count"><span id="result-count">{items.length}</span> 項</p>
 
   <!-- LIST VIEW -->
   <section id="list-view" class="view is-active">
     <ul id="vocab-list" class="vocab-list">
-      {vocabulary.map((entry) => (
+      {items.map((entry) => (
         <li
-          class="vocab-item"
-          data-term={entry.term.toLowerCase()}
+          class:list={['vocab-item', `vocab-item--${entry.type}`]}
+          data-english={entry.english.toLowerCase()}
           data-meaning={(entry.meaningZh ?? '').toLowerCase()}
           data-lesson-id={entry.lessonId}
-          data-section={entry.section}
+          data-type={entry.type}
         >
           <div class="vocab-main">
-            <SpeakButton text={entry.term} lang="en-US" />
-            <code class="term">{entry.term}</code>
+            <SpeakButton text={entry.english} lang="en-US" />
+            <span class="item-type-tag">{entry.type.slice(0, 4).toUpperCase()}</span>
+            <code class="term">{entry.english}</code>
             {entry.meaningZh && <span class="meaning">{entry.meaningZh}</span>}
           </div>
           <div class="vocab-meta">
             <a href={`${base}review/${entry.reviewSlug}/`}>{entry.lessonId}</a>
             {entry.topicTitle && <span class="topic">{entry.topicTitle}</span>}
-            <span class="section">{entry.section}</span>
           </div>
         </li>
       ))}
@@ -115,47 +132,51 @@ const lessonIds = Array.from(byLesson.keys()).sort();
 
 <script>
   import { wireSpeakButtons, speak, stop } from '../../lib/speech/speak-ui';
-  import type { VocabularyEntry } from '../../types/content';
+  import type { ReviewItem } from '../../types/content';
 
   const search = document.getElementById('vocab-search') as HTMLInputElement | null;
   const lessonFilter = document.getElementById('vocab-lesson-filter') as HTMLSelectElement | null;
-  const sectionFilter = document.getElementById('vocab-section-filter') as HTMLSelectElement | null;
+  const typeFilter = document.getElementById('vocab-type-filter') as HTMLSelectElement | null;
   const listRoot = document.getElementById('vocab-list');
   const countEl = document.getElementById('result-count');
 
-  // Collect full dataset from DOM once (data is already server-rendered).
-  const allEntries: (VocabularyEntry & { el: HTMLElement })[] = [];
+  // Collect full dataset from DOM once
+  interface Entry extends ReviewItem {
+    el: HTMLElement;
+  }
+  const allEntries: Entry[] = [];
   listRoot?.querySelectorAll<HTMLElement>('.vocab-item').forEach((el) => {
     const term = el.querySelector<HTMLElement>('.term')?.textContent ?? '';
     const meaning = el.querySelector<HTMLElement>('.meaning')?.textContent ?? '';
     const topic = el.querySelector<HTMLElement>('.topic')?.textContent ?? '';
     const lessonId = el.dataset.lessonId ?? '';
-    const section = (el.dataset.section ?? 'other') as VocabularyEntry['section'];
+    const type = (el.dataset.type ?? 'vocabulary') as ReviewItem['type'];
     allEntries.push({
       el,
       id: `${lessonId}-${term}`,
-      term,
+      english: term,
+      type,
       meaningZh: meaning,
       lessonId,
       lessonNo: 0,
       reviewSlug: '',
       topicTitle: topic || undefined,
-      section,
+      section: 'other',
     });
   });
 
-  function filteredEntries(): (VocabularyEntry & { el: HTMLElement })[] {
+  function filteredEntries(): Entry[] {
     const q = (search?.value ?? '').trim().toLowerCase();
     const lesson = lessonFilter?.value ?? '';
-    const section = sectionFilter?.value ?? '';
+    const type = typeFilter?.value ?? '';
     return allEntries.filter((entry) => {
       const matchesQ =
         q === '' ||
-        entry.term.toLowerCase().includes(q) ||
+        entry.english.toLowerCase().includes(q) ||
         (entry.meaningZh ?? '').toLowerCase().includes(q);
       const matchesLesson = lesson === '' || entry.lessonId === lesson;
-      const matchesSection = section === '' || entry.section === section;
-      return matchesQ && matchesLesson && matchesSection;
+      const matchesType = type === '' || entry.type === type;
+      return matchesQ && matchesLesson && matchesType;
     });
   }
 
@@ -163,24 +184,23 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     if (!listRoot) return;
     const q = (search?.value ?? '').trim().toLowerCase();
     const lesson = lessonFilter?.value ?? '';
-    const section = sectionFilter?.value ?? '';
+    const type = typeFilter?.value ?? '';
     let visible = 0;
     listRoot.querySelectorAll<HTMLElement>('.vocab-item').forEach((item) => {
-      const term = item.dataset.term ?? '';
+      const english = item.dataset.english ?? '';
       const meaning = item.dataset.meaning ?? '';
-      const matchesQ = q === '' || term.includes(q) || meaning.includes(q);
+      const matchesQ = q === '' || english.includes(q) || meaning.includes(q);
       const matchesLesson = lesson === '' || item.dataset.lessonId === lesson;
-      const matchesSection = section === '' || item.dataset.section === section;
-      const show = matchesQ && matchesLesson && matchesSection;
+      const matchesType = type === '' || item.dataset.type === type;
+      const show = matchesQ && matchesLesson && matchesType;
       item.style.display = show ? '' : 'none';
       if (show) visible++;
     });
     if (countEl) countEl.textContent = String(visible);
   }
 
-  // -------- Flashcard state --------
   let currentView: 'list' | 'flashcard' = 'list';
-  let deck: (VocabularyEntry & { el: HTMLElement })[] = [];
+  let deck: Entry[] = [];
   let index = 0;
   let flipped = false;
 
@@ -201,7 +221,6 @@ const lessonIds = Array.from(byLesson.keys()).sort();
       flashcardEl.setAttribute('hidden', 'true');
       emptyEl.removeAttribute('hidden');
       idxEl.textContent = '0';
-      if (countEl) countEl.textContent = '0';
       return;
     }
 
@@ -211,8 +230,8 @@ const lessonIds = Array.from(byLesson.keys()).sort();
 
     const entry = deck[index];
     if (!entry) return;
-    termEl.textContent = entry.term;
-    meaningEl.textContent = entry.meaningZh || '（無中文翻譯）';
+    termEl.textContent = entry.english;
+    meaningEl.textContent = entry.meaningZh || '（無中文翻譯，靠情境記）';
     topicEl.textContent = entry.topicTitle
       ? `${entry.lessonId} · ${entry.topicTitle}`
       : entry.lessonId;
@@ -249,25 +268,25 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     if (deck.length === 0) return;
     const entry = deck[index];
     if (!entry) return;
-    speak(entry.term, { lang: 'en-US' }).catch(() => {});
+    speak(entry.english, { lang: 'en-US' }).catch(() => {});
   }
 
   function shuffleDeck(): void {
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [deck[i], deck[j]] = [deck[j] as typeof deck[number], deck[i] as typeof deck[number]];
+      [deck[i], deck[j]] = [deck[j] as Entry, deck[i] as Entry];
     }
     index = 0;
     renderCard();
   }
 
-  // -------- Wire UI --------
   document.querySelectorAll<HTMLButtonElement>('.view-tab').forEach((btn) => {
     btn.addEventListener('click', () => {
       const view = btn.dataset.view as 'list' | 'flashcard' | undefined;
       if (!view) return;
       currentView = view;
       document.querySelectorAll<HTMLButtonElement>('.view-tab').forEach((b) => {
+        if (!b.dataset.view) return;
         const active = b.dataset.view === view;
         b.classList.toggle('is-active', active);
         b.setAttribute('aria-selected', String(active));
@@ -326,7 +345,7 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     }
   });
 
-  [search, lessonFilter, sectionFilter].forEach((el) => {
+  [search, lessonFilter, typeFilter].forEach((el) => {
     el?.addEventListener('input', () => {
       applyListFilters();
       if (currentView === 'flashcard') rebuildDeck();
@@ -349,13 +368,35 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     font-size: 0.875rem;
   }
   h1 {
-    font-family: 'Space Mono', 'JetBrains Mono', ui-monospace, monospace;
+    font-family: var(--font-display);
     letter-spacing: 0.1em;
     font-size: 2.25rem;
   }
   .meta {
     color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
   }
+  .meta strong {
+    color: var(--neon-cyan);
+  }
+  .meta-divider {
+    margin: 0 0.25rem;
+  }
+  .meta-pill {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid currentColor;
+    letter-spacing: 0.05em;
+  }
+  .meta-pill--vocab { color: var(--neon-yellow); }
+  .meta-pill--phrase { color: var(--neon-cyan); }
+  .meta-pill--sentence { color: var(--neon-magenta); }
+  .meta-pill--natural { color: var(--neon-purple); }
+
   .view-tabs {
     display: flex;
     gap: 0.5rem;
@@ -365,24 +406,33 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     position: relative;
     background: transparent;
     color: var(--muted);
-    border: 1px solid var(--neon-cyan, #00ffff);
+    border: 1px solid var(--neon-cyan);
     padding: 0.5rem 1.25rem;
-    font-family: inherit;
+    font-family: var(--font-mono);
     font-weight: 600;
     letter-spacing: 0.1em;
     cursor: pointer;
+    text-decoration: none;
     clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
     transition: all 0.15s ease;
   }
   .view-tab:hover {
-    color: var(--neon-cyan, #00ffff);
-    box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 8px rgba(0, 255, 245, 0.4);
   }
   .view-tab.is-active {
-    color: var(--neon-cyan, #00ffff);
-    background: rgba(0, 255, 255, 0.12);
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+    color: var(--neon-cyan);
+    background: rgba(0, 255, 245, 0.12);
+    box-shadow: 0 0 12px rgba(0, 255, 245, 0.6);
   }
+  .view-tab--link {
+    border-color: var(--neon-magenta);
+    color: var(--neon-magenta);
+  }
+  .view-tab--link:hover {
+    box-shadow: 0 0 8px rgba(255, 0, 170, 0.5);
+  }
+
   .controls {
     display: flex;
     gap: 0.5rem;
@@ -393,11 +443,11 @@ const lessonIds = Array.from(byLesson.keys()).sort();
   .controls select {
     background: #0b0d15;
     color: var(--fg);
-    border: 1px solid var(--neon-cyan, #00ffff);
+    border: 1px solid var(--neon-cyan);
     border-radius: 0;
     padding: 0.55rem 0.85rem;
     font-family: inherit;
-    box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.06);
+    box-shadow: inset 0 0 8px rgba(0, 255, 245, 0.06);
   }
   .controls input {
     flex: 1;
@@ -406,7 +456,7 @@ const lessonIds = Array.from(byLesson.keys()).sort();
   .controls input:focus,
   .controls select:focus {
     outline: none;
-    border-color: var(--neon-magenta, #ff00aa);
+    border-color: var(--neon-magenta);
     box-shadow: 0 0 10px rgba(255, 0, 170, 0.5), inset 0 0 8px rgba(255, 0, 170, 0.1);
   }
   .result-count {
@@ -414,9 +464,11 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     font-size: 0.875rem;
     margin-top: 0.5rem;
   }
-  .result-count strong {
-    color: var(--neon-cyan, #00ffff);
+  .result-count strong,
+  .result-count #result-count {
+    color: var(--neon-cyan);
   }
+
   .view {
     display: none;
   }
@@ -431,31 +483,57 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     padding: 0.75rem 1rem;
     background: rgba(21, 24, 33, 0.7);
     border: 1px solid #23262c;
-    border-left: 2px solid var(--neon-cyan, #00ffff);
+    border-left: 2px solid var(--neon-cyan);
     margin-bottom: 0.5rem;
     transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   }
+  .vocab-item--vocabulary { border-left-color: var(--neon-yellow); }
+  .vocab-item--phrase { border-left-color: var(--neon-cyan); }
+  .vocab-item--sentence { border-left-color: var(--neon-magenta); }
+  .vocab-item--natural { border-left-color: var(--neon-purple); }
   .vocab-item:hover {
-    border-color: var(--neon-cyan, #00ffff);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
-    background: rgba(0, 255, 255, 0.03);
+    box-shadow: 0 0 10px rgba(0, 255, 245, 0.25);
+    background: rgba(0, 255, 245, 0.03);
   }
   .vocab-main {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
+    gap: 0.5rem;
     flex-wrap: wrap;
   }
+  .item-type-tag {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    padding: 0.08rem 0.4rem;
+    border: 1px solid currentColor;
+    opacity: 0.8;
+  }
+  .vocab-item--vocabulary .item-type-tag { color: var(--neon-yellow); }
+  .vocab-item--phrase .item-type-tag { color: var(--neon-cyan); }
+  .vocab-item--sentence .item-type-tag { color: var(--neon-magenta); }
+  .vocab-item--natural .item-type-tag { color: var(--neon-purple); }
+
   .term {
-    font-size: 1.05rem;
-    background: rgba(0, 255, 255, 0.08);
+    font-size: 1rem;
+    background: rgba(0, 255, 245, 0.08);
     padding: 0.15rem 0.55rem;
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    color: var(--neon-cyan, #00ffff);
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    border: 1px solid rgba(0, 255, 245, 0.3);
+    color: var(--neon-cyan);
+    text-shadow: 0 0 8px rgba(0, 255, 245, 0.4);
+    word-break: break-word;
+    max-width: 100%;
+  }
+  .vocab-item--sentence .term,
+  .vocab-item--natural .term {
+    font-size: 0.95rem;
+    color: var(--fg);
+    background: rgba(255, 0, 170, 0.05);
+    border-color: rgba(255, 0, 170, 0.25);
+    text-shadow: 0 0 6px rgba(255, 0, 170, 0.25);
   }
   .meaning {
-    color: var(--fg);
+    color: var(--muted);
   }
   .vocab-meta {
     margin-top: 0.3rem;
@@ -469,10 +547,9 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     color: var(--muted);
   }
   .vocab-meta a:hover {
-    color: var(--neon-cyan, #00ffff);
+    color: var(--neon-cyan);
   }
-  .topic::before,
-  .section::before {
+  .topic::before {
     content: '· ';
   }
 
@@ -481,19 +558,19 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     min-height: 400px;
   }
   .flashcard-stage {
-    max-width: 560px;
+    max-width: 640px;
     margin: 1.5rem auto 0;
     text-align: center;
   }
   .flashcard-count {
-    font-family: 'Space Mono', ui-monospace, monospace;
+    font-family: var(--font-mono);
     color: var(--muted);
     font-size: 0.875rem;
     margin-bottom: 0.75rem;
     letter-spacing: 0.1em;
   }
   .flashcard-count span {
-    color: var(--neon-cyan, #00ffff);
+    color: var(--neon-cyan);
   }
   .flashcard {
     position: relative;
@@ -512,10 +589,10 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     justify-content: center;
     padding: 2rem;
     background: linear-gradient(135deg, #0b0d15 0%, #151a28 100%);
-    border: 1px solid var(--neon-cyan, #00ffff);
+    border: 1px solid var(--neon-cyan);
     box-shadow:
-      0 0 24px rgba(0, 255, 255, 0.25),
-      inset 0 0 30px rgba(0, 255, 255, 0.05);
+      0 0 24px rgba(0, 255, 245, 0.25),
+      inset 0 0 30px rgba(0, 255, 245, 0.05);
     backface-visibility: hidden;
     transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
     clip-path: polygon(
@@ -529,7 +606,7 @@ const lessonIds = Array.from(byLesson.keys()).sort();
   }
   .flashcard-back {
     transform: rotateY(180deg);
-    border-color: var(--neon-magenta, #ff00aa);
+    border-color: var(--neon-magenta);
     box-shadow:
       0 0 24px rgba(255, 0, 170, 0.3),
       inset 0 0 30px rgba(255, 0, 170, 0.06);
@@ -541,19 +618,21 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     transform: rotateY(0deg);
   }
   .flashcard-term {
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-size: clamp(1.1rem, 3.2vw, 2rem);
     font-weight: 600;
-    color: var(--neon-cyan, #00ffff);
+    color: var(--neon-cyan);
     text-shadow:
-      0 0 10px rgba(0, 255, 255, 0.7),
-      0 0 20px rgba(0, 255, 255, 0.3);
+      0 0 10px rgba(0, 255, 245, 0.6),
+      0 0 20px rgba(0, 255, 245, 0.25);
     letter-spacing: 0.02em;
     word-break: break-word;
+    line-height: 1.4;
   }
   .flashcard-meaning {
-    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
     color: var(--fg);
-    text-shadow: 0 0 8px rgba(255, 0, 170, 0.4);
+    text-shadow: 0 0 6px rgba(255, 0, 170, 0.35);
+    line-height: 1.5;
   }
   .flashcard-topic {
     margin-top: 0.5rem;
@@ -575,24 +654,24 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     flex-wrap: wrap;
   }
   .fc-btn {
-    font-family: 'Space Mono', ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     letter-spacing: 0.1em;
     background: transparent;
-    color: var(--neon-cyan, #00ffff);
-    border: 1px solid var(--neon-cyan, #00ffff);
+    color: var(--neon-cyan);
+    border: 1px solid var(--neon-cyan);
     padding: 0.5rem 1rem;
     cursor: pointer;
     clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
     transition: all 0.15s ease;
   }
   .fc-btn:hover {
-    background: rgba(0, 255, 255, 0.1);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    background: rgba(0, 255, 245, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 245, 0.5);
   }
   .fc-btn--speak {
-    color: var(--neon-magenta, #ff00aa);
-    border-color: var(--neon-magenta, #ff00aa);
+    color: var(--neon-magenta);
+    border-color: var(--neon-magenta);
   }
   .fc-btn--speak:hover {
     background: rgba(255, 0, 170, 0.12);
@@ -609,7 +688,7 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     border: 1px solid #23262c;
     padding: 0.1rem 0.35rem;
     border-radius: 3px;
-    color: var(--neon-cyan, #00ffff);
+    color: var(--neon-cyan);
     font-family: inherit;
   }
   .flashcard-empty {
@@ -617,11 +696,10 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     color: var(--muted);
   }
 
-  /* Glitch heading */
   .glitch {
     position: relative;
     display: inline-block;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+    text-shadow: 0 0 10px rgba(0, 255, 245, 0.6);
   }
   .glitch::before,
   .glitch::after {
@@ -633,13 +711,13 @@ const lessonIds = Array.from(byLesson.keys()).sort();
     pointer-events: none;
   }
   .glitch::before {
-    color: var(--neon-magenta, #ff00aa);
+    color: var(--neon-magenta);
     animation: glitch-1 3s infinite linear alternate-reverse;
     clip-path: inset(10% 0 70% 0);
     opacity: 0.75;
   }
   .glitch::after {
-    color: var(--neon-cyan, #00ffff);
+    color: var(--neon-cyan);
     animation: glitch-2 2.5s infinite linear alternate-reverse;
     clip-path: inset(70% 0 10% 0);
     opacity: 0.75;

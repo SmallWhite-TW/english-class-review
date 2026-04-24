@@ -11,6 +11,32 @@ function keyFor(profile: ProfileId): string {
   return `${KEY_PREFIX}${profile}`;
 }
 
+function migrate(doc: unknown, profile: ProfileId): ProfileProgressDocument | null {
+  if (typeof doc !== 'object' || doc === null) return null;
+  const anyDoc = doc as Partial<ProfileProgressDocument> & { version?: number };
+  if (anyDoc.profile !== profile) return null;
+
+  if (anyDoc.version === PROGRESS_SCHEMA_VERSION) {
+    return {
+      profile,
+      version: PROGRESS_SCHEMA_VERSION,
+      updatedAt: anyDoc.updatedAt ?? new Date(0).toISOString(),
+      topics: anyDoc.topics ?? {},
+      items: anyDoc.items ?? {},
+    };
+  }
+  if (anyDoc.version === 1) {
+    return {
+      profile,
+      version: PROGRESS_SCHEMA_VERSION,
+      updatedAt: anyDoc.updatedAt ?? new Date(0).toISOString(),
+      topics: anyDoc.topics ?? {},
+      items: {},
+    };
+  }
+  return null;
+}
+
 export async function loadProgress(
   env: Env,
   profile: ProfileId,
@@ -18,10 +44,7 @@ export async function loadProgress(
   const raw = await env.PROGRESS_KV.get(keyFor(profile), 'text');
   if (raw === null) return null;
   try {
-    const parsed = JSON.parse(raw) as ProfileProgressDocument;
-    if (parsed.version !== PROGRESS_SCHEMA_VERSION) return null;
-    if (parsed.profile !== profile) return null;
-    return parsed;
+    return migrate(JSON.parse(raw), profile);
   } catch {
     return null;
   }
@@ -40,5 +63,6 @@ export function emptyDocument(profile: ProfileId): ProfileProgressDocument {
     version: PROGRESS_SCHEMA_VERSION,
     updatedAt: new Date(0).toISOString(),
     topics: {},
+    items: {},
   };
 }

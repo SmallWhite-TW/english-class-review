@@ -8,6 +8,8 @@ export function isProfileId(value: string): value is ProfileId {
 
 export type ConfidenceLevel = 1 | 2 | 3 | 4 | 5;
 
+export type ItemType = 'vocabulary' | 'phrase' | 'sentence' | 'natural';
+
 export interface TopicProgressRecord {
   topicId: string;
   lessonId: string;
@@ -17,14 +19,29 @@ export interface TopicProgressRecord {
   updatedAt: string;
 }
 
-export interface ProfileProgressDocument {
-  profile: ProfileId;
-  version: 1;
+export interface ItemProgressRecord {
+  itemId: string;
+  type: ItemType;
+  lessonId: string;
+  reviewSlug: string;
+  confidence: ConfidenceLevel | null;
+  lastReviewedAt: string | null;
+  nextDueAt: string | null;
+  intervalDays: number;
+  reviewCount: number;
+  consecutiveMastery: number;
   updatedAt: string;
-  topics: Record<string, TopicProgressRecord>;
 }
 
-export const PROGRESS_SCHEMA_VERSION = 1 as const;
+export interface ProfileProgressDocument {
+  profile: ProfileId;
+  version: 2;
+  updatedAt: string;
+  topics: Record<string, TopicProgressRecord>;
+  items: Record<string, ItemProgressRecord>;
+}
+
+export const PROGRESS_SCHEMA_VERSION = 2 as const;
 
 export interface Env {
   PROGRESS_KV: KVNamespace;

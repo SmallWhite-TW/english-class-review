@@ -1,5 +1,6 @@
 import type {
   ConfidenceLevel,
+  ItemProgressRecord,
   ProfileId,
   ProfileProgressDocument,
   TopicProgressRecord,
@@ -20,6 +21,17 @@ export function emptyDocument(profile: ProfileId): ProfileProgressDocument {
     version: PROGRESS_SCHEMA_VERSION,
     updatedAt: new Date(0).toISOString(),
     topics: {},
+    items: {},
+  };
+}
+
+function normalize(doc: ProfileProgressDocument): ProfileProgressDocument {
+  return {
+    profile: doc.profile,
+    version: PROGRESS_SCHEMA_VERSION,
+    updatedAt: doc.updatedAt,
+    topics: doc.topics ?? {},
+    items: doc.items ?? {},
   };
 }
 
@@ -28,11 +40,28 @@ export function loadLocal(profile: ProfileId): ProfileProgressDocument {
   const raw = localStorage.getItem(keyFor(profile));
   if (raw === null) return emptyDocument(profile);
   try {
-    const parsed = JSON.parse(raw) as ProfileProgressDocument;
-    if (parsed.version !== PROGRESS_SCHEMA_VERSION || parsed.profile !== profile) {
-      return emptyDocument(profile);
+    const parsed = JSON.parse(raw) as {
+      version?: number;
+      profile?: ProfileId;
+      updatedAt?: string;
+      topics?: Record<string, TopicProgressRecord>;
+      items?: Record<string, ItemProgressRecord>;
+    };
+    if (parsed.profile !== profile) return emptyDocument(profile);
+    // Legacy v1 → v2 migrate in-place
+    if ((parsed.version as number | undefined) === 1) {
+      const migrated: ProfileProgressDocument = {
+        profile,
+        version: PROGRESS_SCHEMA_VERSION,
+        updatedAt: parsed.updatedAt ?? new Date(0).toISOString(),
+        topics: (parsed.topics as ProfileProgressDocument['topics']) ?? {},
+        items: {},
+      };
+      saveLocal(migrated);
+      return migrated;
     }
-    return parsed;
+    if (parsed.version !== PROGRESS_SCHEMA_VERSION) return emptyDocument(profile);
+    return normalize(parsed as ProfileProgressDocument);
   } catch {
     return emptyDocument(profile);
   }
@@ -76,30 +105,38 @@ export function updateTopic(
   return next;
 }
 
-export function mergeDocument(
-  base: ProfileProgressDocument,
-  incoming: ProfileProgressDocument,
-): ProfileProgressDocument {
-  if (base.profile !== incoming.profile) return base;
-  const topics: Record<string, TopicProgressRecord> = { ...base.topics };
-  for (const [id, incomingRecord] of Object.entries(incoming.topics)) {
-    const existing = topics[id];
+function mergeMaps<T extends { updatedAt: string }>(
+  base: Record<string, T>,
+  incoming: Record<string, T>,
+): Record<string, T> {
+  const out: Record<string, T> = { ...base };
+  for (const [id, incomingRecord] of Object.entries(incoming)) {
+    const existing = out[id];
     if (!existing) {
-      topics[id] = incomingRecord;
+      out[id] = incomingRecord;
       continue;
     }
     const existingTime = Date.parse(existing.updatedAt);
     const incomingTime = Date.parse(incomingRecord.updatedAt);
     if (Number.isNaN(incomingTime)) continue;
     if (Number.isNaN(existingTime) || incomingTime > existingTime) {
-      topics[id] = incomingRecord;
+      out[id] = incomingRecord;
     }
   }
+  return out;
+}
+
+export function mergeDocument(
+  base: ProfileProgressDocument,
+  incoming: ProfileProgressDocument,
+): ProfileProgressDocument {
+  if (base.profile !== incoming.profile) return base;
   return {
     profile: base.profile,
-    version: base.version,
+    version: PROGRESS_SCHEMA_VERSION,
     updatedAt: new Date().toISOString(),
-    topics,
+    topics: mergeMaps<TopicProgressRecord>(base.topics, incoming.topics),
+    items: mergeMaps<ItemProgressRecord>(base.items, incoming.items),
   };
 }
 

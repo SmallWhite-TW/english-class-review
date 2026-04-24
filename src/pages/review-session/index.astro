@@ -1,0 +1,788 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { ReviewItem } from '../../types/content.js';
+import itemsData from '../../content/generated/items.json';
+
+const items = itemsData as ReviewItem[];
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+---
+
+<BaseLayout title="Review Session" description="每日 SRS 複習">
+  <div class="session-root" id="session-root">
+    <div class="session-top">
+      <a href={base} class="exit">✕ EXIT</a>
+      <div class="session-progress">
+        <span id="session-counter">0 / 0</span>
+        <div class="session-bar">
+          <div class="session-bar-fill" id="session-bar-fill" style="width: 0%"></div>
+        </div>
+      </div>
+      <div class="session-mode" id="session-mode">—</div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <section class="session-panel" id="empty-panel" hidden>
+      <div class="badge-ok">✓ ALL CLEAR</div>
+      <h1 class="glitch" data-text="NO QUEUE">NO QUEUE</h1>
+      <p class="empty-msg">今天沒有需要複習的項目。要不要開始探索新的？</p>
+      <div class="cta-row">
+        <button type="button" class="cta-btn" id="start-new-btn">PULL 20 NEW ITEMS</button>
+        <a href={base} class="ghost-btn">RETURN HOME</a>
+      </div>
+    </section>
+
+    <!-- NO PROFILE STATE -->
+    <section class="session-panel" id="no-profile-panel" hidden>
+      <div class="badge-warn">⚠ PROFILE REQUIRED</div>
+      <h1 class="glitch" data-text="SELECT PROFILE">SELECT PROFILE</h1>
+      <p class="empty-msg">Review session 需要先選擇一個 profile，才能記錄複習進度。</p>
+      <div class="cta-row">
+        <a href={`${base}profile/`} class="cta-btn">→ CHOOSE PROFILE</a>
+      </div>
+    </section>
+
+    <!-- SESSION CARD -->
+    <section class="session-panel session-card-panel" id="card-panel" hidden>
+      <div class="meta-row">
+        <span class="meta-type" id="card-type">—</span>
+        <span class="meta-lesson" id="card-lesson">—</span>
+        <span class="meta-status" id="card-status">—</span>
+      </div>
+
+      <div class="card-stage" id="card-stage">
+        <div class="card-face card-front">
+          <div class="card-english" id="card-english">—</div>
+          <div class="card-hint" id="card-hint-zh"></div>
+          <div class="card-prompt">&gt; 想一下再揭曉答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-english-sm" id="card-english-2">—</div>
+          <div class="card-zh" id="card-meaning">—</div>
+          <div class="card-topic" id="card-topic"></div>
+        </div>
+      </div>
+
+      <div class="card-controls" id="controls-reveal">
+        <button type="button" class="reveal-btn" id="reveal-btn">
+          <span class="reveal-text">REVEAL</span>
+          <span class="reveal-hint">[ SPACE ]</span>
+        </button>
+      </div>
+
+      <div class="card-controls rating-controls" id="controls-rate" hidden>
+        <div class="rating-label">掌握度？</div>
+        <div class="rating-row">
+          <button type="button" class="rating-btn rating-1" data-rating="1">
+            <span class="rating-num">1</span>
+            <span class="rating-label-sub">不熟</span>
+            <span class="rating-interval">+1d</span>
+          </button>
+          <button type="button" class="rating-btn rating-2" data-rating="2">
+            <span class="rating-num">2</span>
+            <span class="rating-label-sub">生疏</span>
+            <span class="rating-interval">+3d</span>
+          </button>
+          <button type="button" class="rating-btn rating-3" data-rating="3">
+            <span class="rating-num">3</span>
+            <span class="rating-label-sub">普通</span>
+            <span class="rating-interval">+7d</span>
+          </button>
+          <button type="button" class="rating-btn rating-4" data-rating="4">
+            <span class="rating-num">4</span>
+            <span class="rating-label-sub">穩</span>
+            <span class="rating-interval">+14d</span>
+          </button>
+          <button type="button" class="rating-btn rating-5" data-rating="5">
+            <span class="rating-num">5</span>
+            <span class="rating-label-sub">熟練</span>
+            <span class="rating-interval">+30d</span>
+          </button>
+        </div>
+        <div class="rating-shortcuts">
+          <kbd>1</kbd>–<kbd>5</kbd> 評分 · <kbd>Space</kbd> 揭曉 · <kbd>S</kbd> 跳過 · <kbd>Esc</kbd> 離開
+        </div>
+      </div>
+    </section>
+
+    <!-- DONE -->
+    <section class="session-panel" id="done-panel" hidden>
+      <div class="badge-ok">✓ SESSION COMPLETE</div>
+      <h1 class="glitch" data-text="WELL DONE">WELL DONE</h1>
+      <div class="done-stats">
+        <div class="done-stat"><span id="done-reviewed">0</span><em>reviewed</em></div>
+        <div class="done-stat"><span id="done-avg">—</span><em>avg confidence</em></div>
+        <div class="done-stat"><span id="done-time">0s</span><em>elapsed</em></div>
+      </div>
+      <div class="cta-row">
+        <a href={base} class="cta-btn">→ HOME</a>
+        <button type="button" class="ghost-btn" id="again-btn">AGAIN</button>
+      </div>
+    </section>
+  </div>
+
+  <script
+    is:inline
+    id="review-items-data"
+    type="application/json"
+    set:html={JSON.stringify(items)}
+  />
+</BaseLayout>
+
+<script>
+  import type { ReviewItem } from '../../types/content';
+  import type { ConfidenceLevel, ItemType } from '../../types/progress';
+  import { getActiveProfile } from '../../lib/profile/profile-store';
+  import { buildDailyQueue, flattenQueue } from '../../lib/srs/schedule';
+  import { allItemStates, rateItem } from '../../lib/srs/item-progress';
+  import { scheduleSync } from '../../lib/progress/sync-client';
+  import { speak, stop as stopSpeech } from '../../lib/speech/speak-ui';
+
+  const dataEl = document.getElementById('review-items-data');
+  const allItems: ReviewItem[] = dataEl?.textContent ? JSON.parse(dataEl.textContent) : [];
+
+  const TYPE_DISPLAY: Record<ItemType, string> = {
+    vocabulary: 'VOCAB',
+    phrase: 'PHRASE',
+    sentence: 'SENTENCE',
+    natural: 'NATURAL',
+  };
+
+  const STATUS_DISPLAY = {
+    overdue: '⚠ OVERDUE',
+    due: '● DUE TODAY',
+    new: '✦ NEW',
+  } as const;
+
+  interface SessionEntry {
+    item: ReviewItem;
+    status: 'overdue' | 'due' | 'new';
+  }
+
+  let queue: SessionEntry[] = [];
+  let index = 0;
+  let revealed = false;
+  let startTime = Date.now();
+  let ratedCount = 0;
+  let confidenceSum = 0;
+
+  const panel = {
+    empty: document.getElementById('empty-panel')!,
+    noProfile: document.getElementById('no-profile-panel')!,
+    card: document.getElementById('card-panel')!,
+    done: document.getElementById('done-panel')!,
+  };
+
+  const cardStage = document.getElementById('card-stage')!;
+  const englishEl = document.getElementById('card-english')!;
+  const englishSmEl = document.getElementById('card-english-2')!;
+  const hintZhEl = document.getElementById('card-hint-zh')!;
+  const meaningEl = document.getElementById('card-meaning')!;
+  const topicEl = document.getElementById('card-topic')!;
+  const typeEl = document.getElementById('card-type')!;
+  const lessonEl = document.getElementById('card-lesson')!;
+  const statusEl = document.getElementById('card-status')!;
+  const modeEl = document.getElementById('session-mode')!;
+  const counterEl = document.getElementById('session-counter')!;
+  const barEl = document.getElementById('session-bar-fill') as HTMLElement;
+
+  const revealBtn = document.getElementById('reveal-btn')!;
+  const controlsReveal = document.getElementById('controls-reveal')!;
+  const controlsRate = document.getElementById('controls-rate')!;
+
+  function showPanel(id: keyof typeof panel): void {
+    for (const [key, el] of Object.entries(panel)) {
+      if (key === id) el.removeAttribute('hidden');
+      else el.setAttribute('hidden', 'true');
+    }
+  }
+
+  function buildQueue(mode: 'today' | 'new-only'): SessionEntry[] {
+    const profile = getActiveProfile();
+    if (!profile) return [];
+    const progress = allItemStates(profile);
+
+    if (mode === 'new-only') {
+      // User asked to pull new items — ignore SRS state, just take 20 items
+      // they've never touched, preferring recent lessons.
+      const fresh = allItems
+        .filter((it) => !progress[it.id])
+        .sort((a, b) => b.lessonNo - a.lessonNo)
+        .slice(0, 20);
+      return fresh.map((item) => ({ item, status: 'new' as const }));
+    }
+
+    const queue = buildDailyQueue(allItems, progress, new Date(), { maxSize: 30 });
+    return flattenQueue(queue).map((entry) => ({
+      item: entry.item,
+      status: entry.status,
+    }));
+  }
+
+  function updateProgressBar(): void {
+    const total = queue.length;
+    counterEl.textContent = `${Math.min(index + 1, total)} / ${total}`;
+    const percent = total === 0 ? 0 : Math.round((index / total) * 100);
+    barEl.style.width = `${percent}%`;
+  }
+
+  function renderCard(): void {
+    const entry = queue[index];
+    if (!entry) return;
+    const { item, status } = entry;
+
+    revealed = false;
+    cardStage.classList.remove('is-revealed');
+
+    englishEl.textContent = item.english;
+    englishSmEl.textContent = item.english;
+    hintZhEl.textContent = ''; // keep front clean — no cheating
+
+    meaningEl.textContent = item.meaningZh || '（本項目沒有中文對照，靠情境回想）';
+    topicEl.textContent = item.topicTitle
+      ? `${item.lessonId} · Topic ${item.topicIndex ?? '?'} · ${item.topicTitle}`
+      : item.lessonId;
+
+    typeEl.textContent = TYPE_DISPLAY[item.type];
+    typeEl.className = `meta-type meta-type--${item.type}`;
+    lessonEl.textContent = item.lessonId.toUpperCase();
+    statusEl.textContent = STATUS_DISPLAY[status];
+    statusEl.className = `meta-status meta-status--${status}`;
+
+    controlsRate.setAttribute('hidden', 'true');
+    controlsReveal.removeAttribute('hidden');
+
+    updateProgressBar();
+  }
+
+  function reveal(): void {
+    if (revealed) return;
+    revealed = true;
+    cardStage.classList.add('is-revealed');
+    controlsReveal.setAttribute('hidden', 'true');
+    controlsRate.removeAttribute('hidden');
+
+    // Auto-play the English pronunciation when the answer is revealed.
+    const entry = queue[index];
+    if (entry) {
+      speak(entry.item.english, { lang: 'en-US' }).catch(() => {});
+    }
+  }
+
+  function rate(confidence: ConfidenceLevel): void {
+    const entry = queue[index];
+    if (!entry) return;
+    const profile = getActiveProfile();
+    if (!profile) return;
+    stopSpeech();
+
+    rateItem(
+      profile,
+      {
+        itemId: entry.item.id,
+        type: entry.item.type,
+        lessonId: entry.item.lessonId,
+        reviewSlug: entry.item.reviewSlug,
+      },
+      confidence,
+    );
+    scheduleSync(profile);
+
+    ratedCount++;
+    confidenceSum += confidence;
+
+    advance();
+  }
+
+  function skip(): void {
+    stopSpeech();
+    advance();
+  }
+
+  function advance(): void {
+    index++;
+    if (index >= queue.length) {
+      finishSession();
+      return;
+    }
+    renderCard();
+  }
+
+  function finishSession(): void {
+    updateProgressBar();
+    const elapsedSec = Math.round((Date.now() - startTime) / 1000);
+    const elapsedText =
+      elapsedSec < 60 ? `${elapsedSec}s` : `${Math.floor(elapsedSec / 60)}m ${elapsedSec % 60}s`;
+    document.getElementById('done-reviewed')!.textContent = String(ratedCount);
+    document.getElementById('done-avg')!.textContent =
+      ratedCount === 0 ? '—' : (confidenceSum / ratedCount).toFixed(1);
+    document.getElementById('done-time')!.textContent = elapsedText;
+    showPanel('done');
+  }
+
+  function startSession(mode: 'today' | 'new-only'): void {
+    const profile = getActiveProfile();
+    if (!profile) {
+      showPanel('noProfile');
+      return;
+    }
+    queue = buildQueue(mode);
+    index = 0;
+    ratedCount = 0;
+    confidenceSum = 0;
+    startTime = Date.now();
+    revealed = false;
+    modeEl.textContent = mode === 'today' ? 'MODE / TODAY' : 'MODE / NEW';
+    if (queue.length === 0) {
+      if (mode === 'today') {
+        showPanel('empty');
+      } else {
+        // user asked for new but there are none
+        showPanel('empty');
+      }
+      return;
+    }
+    showPanel('card');
+    renderCard();
+  }
+
+  // Wire buttons
+  revealBtn.addEventListener('click', reveal);
+  document.querySelectorAll<HTMLButtonElement>('.rating-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const n = Number(btn.dataset.rating);
+      if (n >= 1 && n <= 5) rate(n as ConfidenceLevel);
+    });
+  });
+  document.getElementById('start-new-btn')?.addEventListener('click', () => startSession('new-only'));
+  document.getElementById('again-btn')?.addEventListener('click', () => startSession('today'));
+
+  document.addEventListener('keydown', (ev) => {
+    const tag = (ev.target as HTMLElement | null)?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+    if (ev.key === 'Escape') {
+      stopSpeech();
+      window.location.href = `${import.meta.env.BASE_URL}`.replace(/\/?$/, '/');
+      return;
+    }
+    if (panel.card.hasAttribute('hidden')) return;
+
+    if (ev.key === ' ') {
+      ev.preventDefault();
+      if (!revealed) reveal();
+      return;
+    }
+    if (ev.key === 's' || ev.key === 'S') {
+      skip();
+      return;
+    }
+    const n = Number(ev.key);
+    if (revealed && n >= 1 && n <= 5) {
+      rate(n as ConfidenceLevel);
+    }
+  });
+
+  window.addEventListener('beforeunload', () => stopSpeech());
+
+  // Kick off with today's queue
+  startSession('today');
+</script>
+
+<style>
+  .session-root {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: calc(100dvh - 8rem);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .session-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    background: rgba(11, 13, 21, 0.7);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .exit {
+    color: var(--neon-magenta);
+    text-decoration: none;
+  }
+  .session-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .session-bar {
+    height: 4px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .session-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+    transition: width 0.25s ease;
+    box-shadow: 0 0 6px rgba(0, 255, 245, 0.5);
+  }
+  .session-mode {
+    color: var(--neon-cyan);
+  }
+
+  .session-panel {
+    padding: 2rem;
+    background: rgba(11, 13, 21, 0.65);
+    border: 1px solid var(--border);
+    text-align: center;
+    clip-path: polygon(
+      12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px
+    );
+  }
+  .session-card-panel {
+    text-align: left;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+  .meta-type,
+  .meta-lesson,
+  .meta-status {
+    padding: 0.15rem 0.55rem;
+    border: 1px solid currentColor;
+    color: var(--muted);
+  }
+  .meta-type--vocabulary { color: var(--neon-yellow); }
+  .meta-type--phrase { color: var(--neon-cyan); }
+  .meta-type--sentence { color: var(--neon-magenta); }
+  .meta-type--natural { color: var(--neon-purple); }
+  .meta-status--overdue { color: #ff5555; border-color: #ff5555; }
+  .meta-status--due { color: var(--neon-cyan); }
+  .meta-status--new { color: var(--neon-green); border-color: var(--neon-green); }
+
+  .card-stage {
+    position: relative;
+    min-height: 280px;
+    margin: 1rem 0 1.5rem;
+  }
+  .card-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-back {
+    opacity: 0;
+    transform: translateY(15px);
+    pointer-events: none;
+  }
+  .card-stage.is-revealed .card-front {
+    opacity: 0;
+    transform: translateY(-15px);
+    pointer-events: none;
+  }
+  .card-stage.is-revealed .card-back {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .card-english {
+    font-size: clamp(1.35rem, 3.8vw, 2.2rem);
+    font-weight: 600;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 12px rgba(0, 255, 245, 0.6), 0 0 22px rgba(0, 255, 245, 0.25);
+    letter-spacing: 0.01em;
+    text-align: center;
+    line-height: 1.4;
+    word-break: break-word;
+    max-width: 44rem;
+  }
+  .card-english-sm {
+    font-size: clamp(0.95rem, 2vw, 1.2rem);
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono);
+    text-align: center;
+  }
+  .card-zh {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--fg);
+    margin-bottom: 0.75rem;
+    text-align: center;
+    text-shadow: 0 0 6px rgba(255, 0, 170, 0.3);
+  }
+  .card-topic {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+  .card-hint {
+    color: var(--muted);
+    margin: 0.5rem 0;
+    font-size: 0.85rem;
+  }
+  .card-prompt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    margin-top: 1.5rem;
+  }
+
+  .card-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .reveal-btn {
+    padding: 0.85rem 2.5rem;
+    background: transparent;
+    color: var(--neon-cyan);
+    border: 1px solid var(--neon-cyan);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    transition: all 0.15s ease;
+  }
+  .reveal-btn:hover {
+    background: rgba(0, 255, 245, 0.1);
+    box-shadow: 0 0 14px rgba(0, 255, 245, 0.55);
+  }
+  .reveal-hint {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    font-weight: 400;
+    margin-top: 0.25rem;
+  }
+
+  .rating-label {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    font-size: 0.85rem;
+  }
+  .rating-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .rating-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.7rem 0.9rem;
+    min-width: 88px;
+    background: rgba(17, 22, 34, 0.7);
+    border: 1px solid currentColor;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    transition: all 0.15s ease;
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  }
+  .rating-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px currentColor;
+  }
+  .rating-num {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  .rating-label-sub {
+    font-size: 0.75rem;
+  }
+  .rating-interval {
+    font-size: 0.65rem;
+    opacity: 0.7;
+  }
+  .rating-1 { color: #ff4444; }
+  .rating-2 { color: #ff8844; }
+  .rating-3 { color: var(--neon-yellow); }
+  .rating-4 { color: var(--neon-cyan); }
+  .rating-5 { color: var(--neon-green); }
+
+  .rating-shortcuts {
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+  .rating-shortcuts kbd {
+    background: rgba(11, 13, 21, 0.8);
+    border: 1px solid var(--border);
+    padding: 0.05rem 0.35rem;
+    margin: 0 0.15rem;
+    color: var(--neon-cyan);
+    border-radius: 3px;
+    font-family: inherit;
+  }
+
+  /* empty / done panels */
+  .badge-ok {
+    display: inline-block;
+    padding: 0.25rem 0.85rem;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    font-family: var(--font-mono);
+    letter-spacing: 0.15em;
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .badge-warn {
+    display: inline-block;
+    padding: 0.25rem 0.85rem;
+    border: 1px solid var(--neon-yellow);
+    color: var(--neon-yellow);
+    font-family: var(--font-mono);
+    letter-spacing: 0.15em;
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .empty-msg {
+    color: var(--muted);
+    margin: 1rem 0 1.5rem;
+  }
+  .cta-row {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: rgba(0, 255, 245, 0.08);
+    color: var(--neon-cyan);
+    border: 1px solid var(--neon-cyan);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    cursor: pointer;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    transition: all 0.15s ease;
+  }
+  .cta-btn:hover {
+    background: rgba(0, 255, 245, 0.18);
+    box-shadow: 0 0 14px rgba(0, 255, 245, 0.55);
+  }
+  .ghost-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    cursor: pointer;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    transition: all 0.15s ease;
+  }
+  .ghost-btn:hover {
+    color: var(--fg);
+    border-color: var(--fg);
+  }
+
+  .done-stats {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin: 1.5rem 0 2rem;
+    flex-wrap: wrap;
+  }
+  .done-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    background: rgba(17, 22, 34, 0.7);
+    border: 1px solid var(--border);
+    min-width: 100px;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .done-stat span {
+    font-size: 1.75rem;
+    color: var(--neon-cyan);
+    font-family: var(--font-display);
+    text-shadow: 0 0 10px rgba(0, 255, 245, 0.5);
+  }
+  .done-stat em {
+    font-style: normal;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .glitch {
+    position: relative;
+    display: inline-block;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    color: var(--fg);
+    text-shadow: 0 0 10px rgba(0, 255, 245, 0.5);
+  }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+  }
+  .glitch::before {
+    color: var(--neon-magenta);
+    animation: glitch-1 3s infinite linear alternate-reverse;
+    clip-path: inset(10% 0 70% 0);
+    opacity: 0.7;
+  }
+  .glitch::after {
+    color: var(--neon-cyan);
+    animation: glitch-2 2.5s infinite linear alternate-reverse;
+    clip-path: inset(70% 0 10% 0);
+    opacity: 0.7;
+  }
+  @keyframes glitch-1 {
+    0%, 90%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 1px); }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(1px, 2px); }
+    80% { transform: translate(2px, -1px); }
+  }
+  @keyframes glitch-2 {
+    0%, 85%, 100% { transform: translate(0); }
+    30% { transform: translate(2px, -2px); }
+    50% { transform: translate(-2px, 1px); }
+    70% { transform: translate(1px, -1px); }
+  }
+</style>

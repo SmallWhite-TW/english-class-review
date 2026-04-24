@@ -3,10 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import LessonCard from '../components/lesson/LessonCard.astro';
 import { getLessons } from '../lib/content/group-by-lesson.js';
 import { parseTopicMeta } from '../lib/content/parse-topics.js';
+import type { ReviewItem } from '../types/content.js';
+import itemsData from '../content/generated/items.json';
 
 const lessons = await getLessons();
 const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+const items = itemsData as ReviewItem[];
 
 const topicTotalsByLesson: Record<string, number> = {};
 for (const lesson of lessons) {
@@ -15,6 +18,11 @@ for (const lesson of lessons) {
     total += parseTopicMeta(review.data.lessonId, review.data.slug, review.body ?? '').length;
   }
   topicTotalsByLesson[lesson.lessonId] = total;
+}
+
+const itemTotalsByLesson: Record<string, number> = {};
+for (const item of items) {
+  itemTotalsByLesson[item.lessonId] = (itemTotalsByLesson[item.lessonId] ?? 0) + 1;
 }
 ---
 
@@ -34,6 +42,47 @@ for (const lesson of lessons) {
     </div>
   </section>
 
+  <!-- TODAY'S REVIEW QUEUE -->
+  <section class="queue-card" id="queue-card">
+    <div class="queue-head">
+      <span class="queue-tag">&gt;&gt; TODAY&apos;S REVIEW</span>
+      <span class="queue-date" id="queue-date">—</span>
+    </div>
+    <div class="queue-body">
+      <div class="queue-stats">
+        <div class="queue-stat queue-stat--overdue">
+          <span class="queue-stat__num" id="queue-overdue">—</span>
+          <span class="queue-stat__label">overdue</span>
+          <span class="queue-stat__hint">逾期</span>
+        </div>
+        <div class="queue-stat queue-stat--due">
+          <span class="queue-stat__num" id="queue-due">—</span>
+          <span class="queue-stat__label">due today</span>
+          <span class="queue-stat__hint">今天該複習</span>
+        </div>
+        <div class="queue-stat queue-stat--new">
+          <span class="queue-stat__num" id="queue-new">—</span>
+          <span class="queue-stat__label">new</span>
+          <span class="queue-stat__hint">未碰過</span>
+        </div>
+      </div>
+      <div class="queue-actions">
+        <a href={`${base}review-session/`} class="queue-start" id="queue-start">
+          START SESSION
+          <span class="queue-start__arrow">→</span>
+        </a>
+        <p class="queue-hint" id="queue-hint">&gt; 選擇 profile 後才能開始</p>
+      </div>
+    </div>
+    <div class="queue-types" id="queue-types" hidden>
+      <span>Focus:</span>
+      <span class="queue-type queue-type--sentence" id="type-sentence">0 sentences</span>
+      <span class="queue-type queue-type--natural" id="type-natural">0 natural</span>
+      <span class="queue-type queue-type--phrase" id="type-phrase">0 phrases</span>
+      <span class="queue-type queue-type--vocab" id="type-vocab">0 words</span>
+    </div>
+  </section>
+
   <section class="lessons">
     <div class="section-head">
       <h2><span class="section-head__prefix">&gt;&gt;</span> LESSONS</h2>
@@ -50,10 +99,17 @@ for (const lesson of lessons) {
     </div>
     <ul class="quick-grid">
       <li>
+        <a href={`${base}review-session/`} class="quick-card">
+          <span class="quick-card__icon">SRS</span>
+          <span class="quick-card__title">每日複習 Session</span>
+          <span class="quick-card__desc">SRS 排程 · 翻卡 · 自評掌握度</span>
+        </a>
+      </li>
+      <li>
         <a href={`${base}vocabulary/`} class="quick-card">
           <span class="quick-card__icon">VOCAB</span>
           <span class="quick-card__title">單字索引</span>
-          <span class="quick-card__desc">全站單字 · 發音 · Flashcard 模式</span>
+          <span class="quick-card__desc">全站 items · Flashcard 模式</span>
         </a>
       </li>
       <li>
@@ -72,11 +128,26 @@ for (const lesson of lessons) {
     type="application/json"
     set:html={JSON.stringify(topicTotalsByLesson)}
   />
+  <script
+    is:inline
+    id="lesson-item-totals"
+    type="application/json"
+    set:html={JSON.stringify(itemTotalsByLesson)}
+  />
+  <script
+    is:inline
+    id="items-data"
+    type="application/json"
+    set:html={JSON.stringify(items)}
+  />
 </BaseLayout>
 
 <script>
+  import type { ReviewItem } from '../types/content';
   import { getActiveProfile, PROFILE_DISPLAY } from '../lib/profile/profile-store';
   import { initLessonCardProgress } from '../lib/progress/topic-progress-ui';
+  import { allItemStates } from '../lib/srs/item-progress';
+  import { buildDailyQueue } from '../lib/srs/schedule';
 
   const label = document.getElementById('current-profile-label');
   function refreshProfileLabel() {
@@ -86,18 +157,160 @@ for (const lesson of lessons) {
       ? `PROFILE / ${PROFILE_DISPLAY[profile].toUpperCase()}`
       : 'NO PROFILE / CHOOSE ONE';
   }
-  refreshProfileLabel();
-  window.addEventListener('profile:changed', refreshProfileLabel);
 
   const totalsEl = document.getElementById('lesson-topic-totals');
-  const totals: Record<string, number> = totalsEl?.textContent
+  const topicTotals: Record<string, number> = totalsEl?.textContent
     ? JSON.parse(totalsEl.textContent)
     : {};
 
-  initLessonCardProgress(totals);
+  const itemsEl = document.getElementById('items-data');
+  const allItems: ReviewItem[] = itemsEl?.textContent
+    ? JSON.parse(itemsEl.textContent)
+    : [];
 
+  const itemTotalsEl = document.getElementById('lesson-item-totals');
+  const itemTotals: Record<string, number> = itemTotalsEl?.textContent
+    ? JSON.parse(itemTotalsEl.textContent)
+    : {};
+
+  function formatDate(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function refreshQueue() {
+    const profile = getActiveProfile();
+    const dateEl = document.getElementById('queue-date');
+    if (dateEl) dateEl.textContent = formatDate(new Date());
+
+    const overdueEl = document.getElementById('queue-overdue')!;
+    const dueEl = document.getElementById('queue-due')!;
+    const newEl = document.getElementById('queue-new')!;
+    const startEl = document.getElementById('queue-start') as HTMLAnchorElement;
+    const hintEl = document.getElementById('queue-hint')!;
+    const typesBar = document.getElementById('queue-types')!;
+
+    if (!profile) {
+      overdueEl.textContent = '—';
+      dueEl.textContent = '—';
+      newEl.textContent = '—';
+      startEl.classList.add('is-disabled');
+      startEl.setAttribute('aria-disabled', 'true');
+      startEl.setAttribute(
+        'href',
+        `${import.meta.env.BASE_URL}`.replace(/\/?$/, '/') + 'profile/',
+      );
+      hintEl.textContent = '> 選擇 profile 後才能開始';
+      typesBar.setAttribute('hidden', 'true');
+      return;
+    }
+
+    const progress = allItemStates(profile);
+    const queue = buildDailyQueue(allItems, progress, new Date(), { maxSize: 200 });
+
+    overdueEl.textContent = String(queue.overdue.length);
+    dueEl.textContent = String(queue.due.length);
+    newEl.textContent = String(queue.new.length);
+    startEl.classList.remove('is-disabled');
+    startEl.removeAttribute('aria-disabled');
+    startEl.setAttribute(
+      'href',
+      `${import.meta.env.BASE_URL}`.replace(/\/?$/, '/') + 'review-session/',
+    );
+
+    const total = queue.total;
+    hintEl.textContent =
+      total === 0
+        ? '> 今天沒有該複習的項目！可按 session 拉 20 個新 item'
+        : `> 建議花 ${Math.max(3, Math.ceil(total / 4))}–${Math.max(5, Math.ceil(total / 2))} 分鐘清掉這批`;
+
+    // type breakdown among overdue+due (what's immediate)
+    const allEntries = [...queue.overdue, ...queue.due, ...queue.new];
+    const typeCount: Record<string, number> = {};
+    for (const e of allEntries) {
+      typeCount[e.item.type] = (typeCount[e.item.type] ?? 0) + 1;
+    }
+    document.getElementById('type-sentence')!.textContent = `${typeCount['sentence'] ?? 0} sentences`;
+    document.getElementById('type-natural')!.textContent = `${typeCount['natural'] ?? 0} natural`;
+    document.getElementById('type-phrase')!.textContent = `${typeCount['phrase'] ?? 0} phrases`;
+    document.getElementById('type-vocab')!.textContent = `${typeCount['vocabulary'] ?? 0} words`;
+    if (total > 0) typesBar.removeAttribute('hidden');
+    else typesBar.setAttribute('hidden', 'true');
+  }
+
+  function refreshLessonItemBadges() {
+    const profile = getActiveProfile();
+    const progress = profile ? allItemStates(profile) : {};
+    const now = new Date();
+    const startOfToday = new Date(now);
+    startOfToday.setHours(0, 0, 0, 0);
+    const endOfToday = new Date(now);
+    endOfToday.setHours(23, 59, 59, 999);
+
+    const dueByLesson: Record<string, number> = {};
+    const newByLesson: Record<string, number> = {};
+
+    for (const item of allItems) {
+      const state = progress[item.id];
+      if (!state || !state.nextDueAt) {
+        newByLesson[item.lessonId] = (newByLesson[item.lessonId] ?? 0) + 1;
+        continue;
+      }
+      const due = new Date(state.nextDueAt);
+      if (due <= endOfToday) {
+        dueByLesson[item.lessonId] = (dueByLesson[item.lessonId] ?? 0) + 1;
+      }
+    }
+
+    document
+      .querySelectorAll<HTMLElement>('.lesson-card[data-lesson-id]')
+      .forEach((card) => {
+        const lessonId = card.dataset.lessonId;
+        if (!lessonId) return;
+        const host = card.querySelector<HTMLElement>('a') ?? card;
+        const due = dueByLesson[lessonId] ?? 0;
+        const fresh = newByLesson[lessonId] ?? 0;
+        const total = itemTotals[lessonId] ?? 0;
+        let badge = host.querySelector<HTMLElement>('.item-badge');
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'item-badge';
+          host.appendChild(badge);
+        }
+        if (due > 0) {
+          badge.textContent = `${due} due`;
+          badge.dataset.state = 'due';
+        } else if (fresh === total && total > 0) {
+          badge.textContent = `${total} new`;
+          badge.dataset.state = 'new';
+        } else if (fresh > 0) {
+          badge.textContent = `${fresh} new`;
+          badge.dataset.state = 'partial';
+        } else {
+          badge.textContent = '✓ clear';
+          badge.dataset.state = 'clear';
+        }
+      });
+  }
+
+  function refreshAll() {
+    refreshProfileLabel();
+    refreshQueue();
+    initLessonCardProgress(topicTotals);
+    refreshLessonItemBadges();
+  }
+
+  refreshAll();
+  window.addEventListener('profile:changed', refreshAll);
   window.addEventListener('progress:changed', () => {
-    initLessonCardProgress(totals);
+    refreshQueue();
+    refreshLessonItemBadges();
+    initLessonCardProgress(topicTotals);
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') refreshAll();
   });
 </script>
 
@@ -172,6 +385,156 @@ for (const lesson of lessons) {
     font-weight: 700;
   }
 
+  /* -------- Queue card -------- */
+  .queue-card {
+    position: relative;
+    margin: 1.5rem 0 2rem;
+    padding: 1.25rem 1.5rem 1rem;
+    background:
+      linear-gradient(135deg, rgba(11, 13, 21, 0.85) 0%, rgba(21, 10, 34, 0.9) 100%);
+    border: 1px solid rgba(255, 0, 170, 0.35);
+    box-shadow:
+      0 0 20px rgba(255, 0, 170, 0.2),
+      inset 0 0 30px rgba(0, 255, 245, 0.05);
+    clip-path: polygon(
+      16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px
+    );
+  }
+  .queue-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 1rem;
+  }
+  .queue-tag {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 6px rgba(255, 0, 170, 0.6);
+  }
+  .queue-date {
+    color: var(--muted);
+  }
+  .queue-body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .queue-stats {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .queue-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.65rem 1rem;
+    background: rgba(11, 13, 21, 0.5);
+    border: 1px solid var(--border);
+    min-width: 90px;
+    clip-path: polygon(
+      6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px
+    );
+  }
+  .queue-stat__num {
+    font-family: var(--font-display);
+    font-size: 1.85rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .queue-stat__label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .queue-stat__hint {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+  .queue-stat--overdue .queue-stat__num {
+    color: #ff5a5a;
+    text-shadow: 0 0 10px rgba(255, 90, 90, 0.55);
+  }
+  .queue-stat--due .queue-stat__num {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px rgba(0, 255, 245, 0.55);
+  }
+  .queue-stat--new .queue-stat__num {
+    color: var(--neon-green);
+    text-shadow: 0 0 10px rgba(107, 255, 163, 0.55);
+  }
+  .queue-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+  .queue-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    background: rgba(0, 255, 245, 0.1);
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    transition: all 0.15s ease;
+  }
+  .queue-start:hover {
+    background: rgba(0, 255, 245, 0.2);
+    box-shadow: 0 0 18px rgba(0, 255, 245, 0.6);
+    transform: translateX(2px);
+  }
+  .queue-start__arrow {
+    font-size: 1.1rem;
+  }
+  .queue-start.is-disabled {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .queue-hint {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .queue-types {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px dashed var(--border);
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    align-items: center;
+  }
+  .queue-types > span:first-child {
+    color: var(--muted);
+    margin-right: 0.35rem;
+  }
+  .queue-type {
+    padding: 0.1rem 0.55rem;
+    border: 1px solid currentColor;
+  }
+  .queue-type--sentence { color: var(--neon-magenta); }
+  .queue-type--natural { color: var(--neon-purple); }
+  .queue-type--phrase { color: var(--neon-cyan); }
+  .queue-type--vocab { color: var(--neon-yellow); }
+
   .section-head {
     display: flex;
     align-items: baseline;
@@ -213,7 +576,7 @@ for (const lesson of lessons) {
     padding: 0;
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
   .quick-card {
     display: block;
@@ -261,6 +624,49 @@ for (const lesson of lessons) {
     margin-top: 0.15rem;
     font-size: 0.8rem;
     color: var(--muted);
+  }
+
+  /* Item badge injected into LessonCard */
+  :global(.item-badge) {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    padding: 0.1rem 0.45rem;
+    border: 1px solid currentColor;
+    background: rgba(5, 6, 11, 0.85);
+  }
+  :global(.item-badge[data-state='due']) {
+    color: #ff5a5a;
+    box-shadow: 0 0 6px rgba(255, 90, 90, 0.5);
+  }
+  :global(.item-badge[data-state='new']) {
+    color: var(--neon-green);
+  }
+  :global(.item-badge[data-state='partial']) {
+    color: var(--neon-yellow);
+  }
+  :global(.item-badge[data-state='clear']) {
+    color: var(--muted);
+    border-style: dashed;
+  }
+
+  /* Mobile-friendly stacking */
+  @media (max-width: 600px) {
+    .queue-body {
+      grid-template-columns: 1fr;
+    }
+    .queue-actions {
+      align-items: stretch;
+    }
+    .queue-start {
+      justify-content: center;
+    }
+    .queue-hint {
+      text-align: left;
+    }
   }
 
   /* Glitch (shared) */

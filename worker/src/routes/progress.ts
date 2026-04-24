@@ -45,6 +45,7 @@ function isValidDocument(
   if (doc.version !== PROGRESS_SCHEMA_VERSION) return false;
   if (typeof doc.updatedAt !== 'string') return false;
   if (typeof doc.topics !== 'object' || doc.topics === null) return false;
+  if (typeof doc.items !== 'object' || doc.items === null) return false;
   return true;
 }
 
