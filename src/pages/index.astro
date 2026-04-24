@@ -20,26 +20,49 @@ for (const lesson of lessons) {
 
 <BaseLayout title="English Class Review" description="每週英文課的預習與複習">
   <section class="intro">
-    <h1>English Class Review</h1>
-    <p class="subtitle">每週英文課的預習與複習。選擇一堂課開始。</p>
+    <div class="intro-frame">
+      <span class="intro-tag">// ENGLISH CLASS REVIEW SYSTEM</span>
+      <h1 class="intro-title glitch" data-text="ENGLISH REVIEW">ENGLISH REVIEW</h1>
+      <p class="subtitle">&gt; 每週英文課的預習與複習．選擇一堂課開始</p>
+    </div>
     <div class="profile-hint">
-      <span id="current-profile-label">目前 profile：載入中…</span>
-      <a href={`${base}profile/`}>切換</a>
+      <span class="hint-pill">
+        <span class="hint-dot"></span>
+        <span id="current-profile-label">IDENTIFYING…</span>
+      </span>
+      <a href={`${base}profile/`} class="hint-action">[ SWITCH ]</a>
     </div>
   </section>
 
   <section class="lessons">
-    <h2>Lessons</h2>
+    <div class="section-head">
+      <h2><span class="section-head__prefix">&gt;&gt;</span> LESSONS</h2>
+      <span class="section-count">{lessons.length} units</span>
+    </div>
     <ul class="lesson-grid">
       {lessons.map((lesson) => <LessonCard lesson={lesson} />)}
     </ul>
   </section>
 
   <section class="quick-links">
-    <h2>快速入口</h2>
-    <ul>
-      <li><a href={`${base}vocabulary/`}>單字索引</a></li>
-      <li><a href={`${base}search/`}>全文搜尋</a></li>
+    <div class="section-head">
+      <h2><span class="section-head__prefix">&gt;&gt;</span> QUICK ACCESS</h2>
+    </div>
+    <ul class="quick-grid">
+      <li>
+        <a href={`${base}vocabulary/`} class="quick-card">
+          <span class="quick-card__icon">VOCAB</span>
+          <span class="quick-card__title">單字索引</span>
+          <span class="quick-card__desc">全站單字 · 發音 · Flashcard 模式</span>
+        </a>
+      </li>
+      <li>
+        <a href={`${base}search/`} class="quick-card">
+          <span class="quick-card__icon">FIND</span>
+          <span class="quick-card__title">全文搜尋</span>
+          <span class="quick-card__desc">Pagefind · 支援繁體中文</span>
+        </a>
+      </li>
     </ul>
   </section>
 
@@ -56,12 +79,15 @@ for (const lesson of lessons) {
   import { initLessonCardProgress } from '../lib/progress/topic-progress-ui';
 
   const label = document.getElementById('current-profile-label');
-  if (label) {
+  function refreshProfileLabel() {
+    if (!label) return;
     const profile = getActiveProfile();
     label.textContent = profile
-      ? `目前 profile：${PROFILE_DISPLAY[profile]}`
-      : '目前 profile：尚未選擇';
+      ? `PROFILE / ${PROFILE_DISPLAY[profile].toUpperCase()}`
+      : 'NO PROFILE / CHOOSE ONE';
   }
+  refreshProfileLabel();
+  window.addEventListener('profile:changed', refreshProfileLabel);
 
   const totalsEl = document.getElementById('lesson-topic-totals');
   const totals: Record<string, number> = totalsEl?.textContent
@@ -76,26 +102,99 @@ for (const lesson of lessons) {
 </script>
 
 <style>
-  .intro h1 {
-    margin-bottom: 0.25rem;
+  .intro {
+    margin-bottom: 2rem;
+  }
+  .intro-frame {
+    position: relative;
+    padding: 1.5rem 1.5rem 1.25rem;
+    border-left: 2px solid var(--neon-cyan);
+    margin-bottom: 1rem;
+  }
+  .intro-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.5rem;
+  }
+  .intro-title {
+    margin: 0.25rem 0 0.5rem;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--neon-cyan);
+    text-shadow: 0 0 14px rgba(0, 255, 245, 0.5);
+    position: relative;
+    display: inline-block;
   }
   .subtitle {
     color: var(--muted);
-    margin-top: 0;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
   }
+
   .profile-hint {
-    margin-top: 1rem;
-    padding: 0.75rem 1rem;
-    background: #151821;
-    border: 1px solid #23262c;
-    border-radius: 6px;
+    padding: 0.65rem 1rem;
+    background: rgba(17, 22, 34, 0.65);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--neon-magenta);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    box-shadow: inset 0 0 10px rgba(255, 0, 170, 0.06);
   }
-  .lessons {
-    margin-top: 2rem;
+  .hint-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
   }
+  .hint-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--neon-magenta);
+    box-shadow: 0 0 8px var(--neon-magenta);
+    animation: blink 1.4s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  .hint-action {
+    color: var(--neon-cyan);
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 2rem 0 1rem;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--fg);
+  }
+  .section-head__prefix {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 6px rgba(255, 0, 170, 0.5);
+  }
+  .section-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
   .lesson-grid {
     list-style: none;
     padding: 0;
@@ -103,15 +202,100 @@ for (const lesson of lessons) {
     gap: 1rem;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   }
+
   .quick-links {
-    margin-top: 2rem;
+    margin-top: 3rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #23262c;
+    border-top: 1px dashed var(--border);
   }
-  .quick-links ul {
+  .quick-grid {
     list-style: none;
     padding: 0;
-    display: flex;
-    gap: 1.5rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .quick-card {
+    display: block;
+    padding: 1rem 1.1rem;
+    background: rgba(17, 22, 34, 0.6);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--neon-purple);
+    color: inherit;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+    clip-path: polygon(
+      8px 0,
+      100% 0,
+      100% calc(100% - 8px),
+      calc(100% - 8px) 100%,
+      0 100%,
+      0 8px
+    );
+  }
+  .quick-card:hover {
+    border-color: var(--neon-cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 0 14px rgba(0, 255, 245, 0.2);
+  }
+  .quick-card__icon {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--neon-purple);
+    text-shadow: 0 0 6px rgba(182, 92, 255, 0.45);
+  }
+  .quick-card__title {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 1.05rem;
+    font-family: var(--font-display);
+    letter-spacing: 0.05em;
+    color: var(--fg);
+  }
+  .quick-card__desc {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  /* Glitch (shared) */
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+  }
+  .glitch::before {
+    color: var(--neon-magenta);
+    animation: glitch-1 3s infinite linear alternate-reverse;
+    clip-path: inset(10% 0 70% 0);
+    opacity: 0.7;
+  }
+  .glitch::after {
+    color: var(--neon-purple);
+    animation: glitch-2 2.5s infinite linear alternate-reverse;
+    clip-path: inset(70% 0 10% 0);
+    opacity: 0.7;
+  }
+  @keyframes glitch-1 {
+    0%, 90%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 1px); }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(1px, 2px); }
+    80% { transform: translate(2px, -1px); }
+  }
+  @keyframes glitch-2 {
+    0%, 85%, 100% { transform: translate(0); }
+    30% { transform: translate(2px, -2px); }
+    50% { transform: translate(-2px, 1px); }
+    70% { transform: translate(1px, -1px); }
   }
 </style>

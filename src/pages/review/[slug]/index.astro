@@ -80,7 +80,49 @@ const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 
 <script>
   import { initTopicProgressUi } from '../../../lib/progress/topic-progress-ui';
+  import { wireSpeakButtons, speak } from '../../../lib/speech/speak-ui';
+
+  function injectSpeakButtonsIntoVocabulary(): void {
+    // Vocabulary list items follow the pattern `- <code>term</code>：meaning`.
+    // After markdown rendering, that becomes `<li><code>term</code>...</li>`.
+    // Attach a speak button right after the code element.
+    const codes = document.querySelectorAll<HTMLElement>(
+      '.markdown li > code:first-child, .markdown li > p > code:first-child',
+    );
+    codes.forEach((code) => {
+      const text = code.textContent?.trim();
+      if (!text) return;
+      // Skip code that clearly isn't a vocabulary entry (looks like code syntax).
+      if (/[{}[\]()<>=;]/.test(text)) return;
+      if (code.nextElementSibling?.classList?.contains('speak-btn')) return;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'speak-btn speak-btn--sm speak-btn--inline';
+      btn.dataset.speakText = text;
+      btn.dataset.speakLang = 'en-US';
+      btn.setAttribute('aria-label', `播放：${text}`);
+      btn.setAttribute('aria-pressed', 'false');
+      btn.title = `播放發音：${text}`;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+      code.insertAdjacentElement('afterend', btn);
+      // A thin space between code and button
+      code.insertAdjacentText('afterend', ' ');
+    });
+  }
+
+  injectSpeakButtonsIntoVocabulary();
+  wireSpeakButtons();
   initTopicProgressUi();
+
+  // Click any `<code>` in markdown to play. Optional; the button is the main UI.
+  document.querySelectorAll<HTMLElement>('.markdown li > code:first-child').forEach((code) => {
+    code.style.cursor = 'pointer';
+    code.addEventListener('click', () => {
+      const text = code.textContent?.trim();
+      if (text) speak(text, { lang: 'en-US' }).catch(() => {});
+    });
+  });
 </script>
 
 <style>
