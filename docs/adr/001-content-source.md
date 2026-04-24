@@ -35,7 +35,7 @@ A one-shot migration script (`scripts/migrate-lessons.ts`) performs the initial 
 ### Bad
 
 - One-time migration cost and a period of deciding which directory is "live".
-- Dave (content author) does not currently use git directly; content handoff process must be documented (see ADR-004 and SOP).
+- Dave (fellow student who curates raw lesson material) does not currently use git directly. White ingests the files into this repo; the content handoff process must be documented (see ADR-004 and SOP).
 - MP4 recordings remain outside the repo; the site cannot embed them directly (acceptable — they are not public).
 
 ## Alternatives Considered

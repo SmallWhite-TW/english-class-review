@@ -5,7 +5,7 @@
 
 ## Context
 
-The site has exactly two users: White (owner) and Dave (teacher). Each user wants their own progress to sync across their own devices. Users do **not** need to see each other's progress.
+The site has exactly two users: White and Dave — two fellow students in the same English class. White owns and maintains the site; Dave uses it as a learner. Each user wants their own progress to sync across their own devices. Users do **not** need to see each other's progress.
 
 We want the lightest possible approach that still gives cross-device sync. Full OAuth is overkill. Pure client-side localStorage cannot sync across devices.
 
