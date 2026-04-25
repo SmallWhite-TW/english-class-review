@@ -508,6 +508,36 @@ const clientItems = items.map((it) => ({
     });
   });
 
+  // Honour URL query params: ?lesson=lesson-007&view=flashcard
+  // Used by per-lesson "字卡" entry points on the home and lesson pages.
+  function applyUrlParams(): void {
+    const params = new URLSearchParams(window.location.search);
+    const lessonParam = params.get('lesson');
+    const typeParam = params.get('type');
+    const viewParam = params.get('view');
+
+    if (lessonParam && lessonFilter) {
+      const exists = Array.from(lessonFilter.options).some(
+        (opt) => opt.value === lessonParam,
+      );
+      if (exists) lessonFilter.value = lessonParam;
+    }
+    if (typeParam && typeFilter) {
+      const exists = Array.from(typeFilter.options).some(
+        (opt) => opt.value === typeParam,
+      );
+      if (exists) typeFilter.value = typeParam;
+    }
+    applyListFilters();
+    if (viewParam === 'flashcard') {
+      const flashTab = document.querySelector<HTMLButtonElement>(
+        '.view-tab[data-view="flashcard"]',
+      );
+      flashTab?.click();
+    }
+  }
+
+  applyUrlParams();
   wireSpeakButtons();
   applyListFilters();
 

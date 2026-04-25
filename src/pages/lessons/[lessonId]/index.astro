@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getLessons } from '../../../lib/content/group-by-lesson.js';
+import type { ReviewItem } from '../../../types/content.js';
+import itemsData from '../../../content/generated/items.json';
 
 export async function getStaticPaths() {
   const lessons = await getLessons();
@@ -14,6 +16,19 @@ const { lesson } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 const title = lesson.reviews[0]?.data.title ?? lesson.preStudy[0]?.data.title ?? lesson.lessonId;
+
+const allItems = itemsData as ReviewItem[];
+const lessonItems = allItems.filter((it) => it.lessonId === lesson.lessonId);
+const counts = {
+  vocabulary: lessonItems.filter((i) => i.type === 'vocabulary').length,
+  phrase: lessonItems.filter((i) => i.type === 'phrase').length,
+  sentence: lessonItems.filter((i) => i.type === 'sentence').length,
+  natural: lessonItems.filter((i) => i.type === 'natural').length,
+};
+const flashcardCount = counts.vocabulary + counts.phrase;
+
+const flashcardHref = `${base}vocabulary/?lesson=${lesson.lessonId}&view=flashcard`;
+const listHref = `${base}vocabulary/?lesson=${lesson.lessonId}`;
 ---
 
 <BaseLayout title={`${lesson.lessonId} · ${title}`}>
@@ -22,12 +37,51 @@ const title = lesson.reviews[0]?.data.title ?? lesson.preStudy[0]?.data.title ??
   </nav>
 
   <h1>
-    Lesson {String(lesson.lessonNo).padStart(3, '0')}
+    <span class="lesson-no">LESSON</span>
+    <span class="lesson-num">{String(lesson.lessonNo).padStart(3, '0')}</span>
   </h1>
+
+  <!-- Per-lesson flashcard CTA -->
+  {flashcardCount > 0 && (
+    <div class="lesson-cta">
+      <a href={flashcardHref} class="cta-card cta-card--primary">
+        <div class="cta-card__head">
+          <span class="cta-icon">📇</span>
+          <span class="cta-title">字卡複習</span>
+          <span class="cta-arrow">→</span>
+        </div>
+        <div class="cta-card__body">
+          <span class="cta-stat">
+            <strong>{flashcardCount}</strong> 張卡
+          </span>
+          <span class="cta-breakdown">
+            {counts.vocabulary} 單字 · {counts.phrase} 片語
+          </span>
+        </div>
+        <div class="cta-card__hint">點開卡片 / 翻面看翻譯 / 展開例句</div>
+      </a>
+      <a href={listHref} class="cta-card cta-card--secondary">
+        <div class="cta-card__head">
+          <span class="cta-icon">≡</span>
+          <span class="cta-title">完整 Item List</span>
+          <span class="cta-arrow">→</span>
+        </div>
+        <div class="cta-card__body">
+          <span class="cta-stat">
+            <strong>{lessonItems.length}</strong> 項
+          </span>
+          <span class="cta-breakdown">
+            含 {counts.sentence} 例句 · {counts.natural} 更自然說法
+          </span>
+        </div>
+        <div class="cta-card__hint">所有 item 列表 + 過濾</div>
+      </a>
+    </div>
+  )}
 
   {lesson.preStudy.length > 0 && (
     <section>
-      <h2>預習 (pre-study)</h2>
+      <h2><span class="prefix">&gt;&gt;</span> 預習 (pre-study)</h2>
       <ul class="entry-list">
         {lesson.preStudy.map((entry) => (
           <li>
@@ -43,7 +97,7 @@ const title = lesson.reviews[0]?.data.title ?? lesson.preStudy[0]?.data.title ??
 
   {lesson.reviews.length > 0 && (
     <section>
-      <h2>複習 (review)</h2>
+      <h2><span class="prefix">&gt;&gt;</span> 複習 (review)</h2>
       <ul class="entry-list">
         {lesson.reviews.map((entry) => (
           <li>
@@ -66,9 +120,137 @@ const title = lesson.reviews[0]?.data.title ?? lesson.preStudy[0]?.data.title ??
   .breadcrumb {
     margin-bottom: 1rem;
     font-size: 0.875rem;
+    font-family: var(--font-mono);
   }
+  h1 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .lesson-no {
+    color: var(--muted);
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+  }
+  .lesson-num {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 14px rgba(0, 255, 245, 0.55);
+    font-size: 2.4rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lesson-cta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+  .cta-card {
+    display: block;
+    padding: 1rem 1.2rem 1.1rem;
+    background:
+      linear-gradient(135deg, rgba(11, 13, 21, 0.85) 0%, rgba(21, 10, 34, 0.9) 100%);
+    border: 1px solid var(--neon-cyan);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+    clip-path: polygon(
+      14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px
+    );
+  }
+  .cta-card--primary {
+    border-color: var(--neon-magenta);
+    box-shadow: inset 0 0 24px rgba(255, 0, 170, 0.06), 0 0 14px rgba(255, 0, 170, 0.18);
+  }
+  .cta-card--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 22px rgba(255, 0, 170, 0.5), inset 0 0 24px rgba(255, 0, 170, 0.08);
+  }
+  .cta-card--secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(0, 255, 245, 0.4);
+  }
+
+  .cta-card__head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .cta-icon {
+    font-size: 1.1rem;
+  }
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    flex: 1;
+  }
+  .cta-card--primary .cta-title {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 8px rgba(255, 0, 170, 0.5);
+  }
+  .cta-card--secondary .cta-title {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 8px rgba(0, 255, 245, 0.5);
+  }
+  .cta-arrow {
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+  .cta-card:hover .cta-arrow {
+    color: var(--fg);
+    transform: translateX(2px);
+  }
+
+  .cta-card__body {
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .cta-stat strong {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 8px rgba(0, 255, 245, 0.4);
+  }
+  .cta-card--primary .cta-stat strong {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 8px rgba(255, 0, 170, 0.4);
+  }
+  .cta-breakdown {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .cta-card__hint {
+    margin-top: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
   section {
     margin-top: 2rem;
+  }
+  h2 {
+    font-size: 1.15rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.75rem;
+  }
+  .prefix {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 6px rgba(255, 0, 170, 0.5);
+    margin-right: 0.25rem;
   }
   .entry-list {
     list-style: none;
@@ -80,14 +262,19 @@ const title = lesson.reviews[0]?.data.title ?? lesson.preStudy[0]?.data.title ??
   .entry-list a {
     display: block;
     padding: 0.75rem 1rem;
-    background: #151821;
-    border: 1px solid #23262c;
-    border-radius: 6px;
+    background: rgba(17, 22, 34, 0.65);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--neon-cyan);
     text-decoration: none;
     color: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    clip-path: polygon(
+      6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px
+    );
   }
   .entry-list a:hover {
-    border-color: var(--accent);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 245, 0.25);
   }
   .entry-title {
     display: block;
