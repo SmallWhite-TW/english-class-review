@@ -1,10 +1,10 @@
 ---
 type: review
-lessonId: lesson-007
-lessonNo: 7
+lessonId: lesson-006
+lessonNo: 6
 title: 260425 英文課程課後複習講義
-slug: lesson-007-review
-sourcePath: english-courses/lesson-007/records/260425-lesson-007-review.md
+slug: lesson-006-review
+sourcePath: english-courses/lesson-006/records/260425-lesson-006-review.md
 published: true
 tags: []
 ---

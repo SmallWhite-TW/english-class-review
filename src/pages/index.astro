@@ -279,10 +279,14 @@ for (const item of items) {
           badge.className = 'item-badge';
           host.appendChild(badge);
         }
-        if (due > 0) {
+        if (total === 0) {
+          // lesson has no review-derived items (e.g. only pre-study uploaded)
+          badge.textContent = '無 item';
+          badge.dataset.state = 'empty';
+        } else if (due > 0) {
           badge.textContent = `${due} due`;
           badge.dataset.state = 'due';
-        } else if (fresh === total && total > 0) {
+        } else if (fresh === total) {
           badge.textContent = `${total} new`;
           badge.dataset.state = 'new';
         } else if (fresh > 0) {
@@ -651,6 +655,11 @@ for (const item of items) {
   :global(.item-badge[data-state='clear']) {
     color: var(--muted);
     border-style: dashed;
+  }
+  :global(.item-badge[data-state='empty']) {
+    color: var(--muted);
+    border-style: dotted;
+    opacity: 0.7;
   }
 
   /* Mobile-friendly stacking */
