@@ -22,6 +22,19 @@ const typeCounts = {
   sentence: items.filter((i) => i.type === 'sentence').length,
   natural: items.filter((i) => i.type === 'natural').length,
 };
+
+// Trim payload for the client: only keep fields the page needs.
+const clientItems = items.map((it) => ({
+  id: it.id,
+  type: it.type,
+  english: it.english,
+  meaningZh: it.meaningZh,
+  lessonId: it.lessonId,
+  reviewSlug: it.reviewSlug,
+  topicIndex: it.topicIndex,
+  topicTitle: it.topicTitle,
+  section: it.section,
+}));
 ---
 
 <BaseLayout title="Item Index" description={`共 ${items.length} 項可複習內容`}>
@@ -100,17 +113,35 @@ const typeCounts = {
   <!-- FLASHCARD VIEW -->
   <section id="flashcard-view" class="view flashcard-view">
     <div class="flashcard-stage">
-      <div class="flashcard-count"><span id="fc-index">0</span> / <span id="fc-total">0</span></div>
+      <div class="flashcard-meta">
+        <span class="fc-tag">>> 字卡只顯示老師講的單字 + 片語</span>
+        <span class="flashcard-count"><span id="fc-index">0</span> / <span id="fc-total">0</span></span>
+      </div>
       <div class="flashcard" id="flashcard" role="button" tabindex="0" aria-label="點擊或按空白鍵翻卡">
         <div class="flashcard-face flashcard-front">
+          <span class="fc-type-badge" id="fc-front-type">—</span>
           <div class="flashcard-term" id="fc-term">—</div>
-          <div class="flashcard-hint">點擊卡片 / 空白鍵 翻面</div>
+          <div class="flashcard-hint">點卡片 / Space 翻面</div>
         </div>
         <div class="flashcard-face flashcard-back">
+          <span class="fc-type-badge" id="fc-back-type">—</span>
+          <div class="flashcard-english-sm" id="fc-english-sm">—</div>
           <div class="flashcard-meaning" id="fc-meaning">—</div>
           <div class="flashcard-topic" id="fc-topic"></div>
         </div>
       </div>
+
+      <!-- Examples panel: appears below the card after flip, collapsible -->
+      <details class="examples-panel" id="examples-panel">
+        <summary class="examples-summary">
+          <span class="examples-summary-text">▽ 展開使用例子</span>
+          <span class="examples-summary-count" id="examples-count">—</span>
+        </summary>
+        <ul class="examples-list" id="examples-list"></ul>
+        <p class="examples-empty" id="examples-empty" hidden>
+          這個 topic 沒有對應的例句／更自然說法。
+        </p>
+      </details>
 
       <div class="flashcard-controls">
         <button type="button" class="fc-btn fc-btn--prev" id="fc-prev" aria-label="上一張">◀ PREV</button>
@@ -120,65 +151,67 @@ const typeCounts = {
       </div>
 
       <div class="flashcard-shortcuts">
-        <kbd>Space</kbd> 翻面 · <kbd>←</kbd> 上一張 · <kbd>→</kbd> 下一張 · <kbd>P</kbd> 發音 · <kbd>S</kbd> 洗牌
+        <kbd>Space</kbd> 翻面 · <kbd>←</kbd> 上一張 · <kbd>→</kbd> 下一張 · <kbd>P</kbd> 發音 · <kbd>S</kbd> 洗牌 · <kbd>E</kbd> 展開例子
       </div>
 
       <div class="flashcard-empty" id="fc-empty" hidden>
-        <p>目前篩選結果沒有可用的卡片。調整上方篩選條件試試。</p>
+        <p>目前篩選結果沒有可用的字卡（lesson 範圍可能太小）。調整左上 LESSON 過濾器試試。</p>
       </div>
     </div>
   </section>
+
+  <script
+    is:inline
+    id="items-data"
+    type="application/json"
+    set:html={JSON.stringify(clientItems)}
+  />
 </BaseLayout>
 
 <script>
   import { wireSpeakButtons, speak, stop } from '../../lib/speech/speak-ui';
   import type { ReviewItem } from '../../types/content';
 
+  type ClientItem = Pick<
+    ReviewItem,
+    'id' | 'type' | 'english' | 'meaningZh' | 'lessonId' | 'reviewSlug' | 'topicIndex' | 'topicTitle' | 'section'
+  >;
+
+  const dataEl = document.getElementById('items-data');
+  const allItems: ClientItem[] = dataEl?.textContent ? JSON.parse(dataEl.textContent) : [];
+
+  // Group sentence + natural by `${lessonId}::${topicIndex ?? 'no-topic'}`
+  // so each vocab/phrase card can pull "examples" of how it might appear.
+  const examplesByTopic = new Map<string, ClientItem[]>();
+  for (const it of allItems) {
+    if (it.type !== 'sentence' && it.type !== 'natural') continue;
+    const key = `${it.lessonId}::${it.topicIndex ?? 'no-topic'}`;
+    const list = examplesByTopic.get(key) ?? [];
+    list.push(it);
+    examplesByTopic.set(key, list);
+  }
+  function lookupExamples(item: ClientItem): ClientItem[] {
+    const key = `${item.lessonId}::${item.topicIndex ?? 'no-topic'}`;
+    const all = examplesByTopic.get(key) ?? [];
+    // Prefer examples that actually contain the term (case-insensitive match).
+    const lower = item.english.toLowerCase();
+    const containing = all.filter((e) => e.english.toLowerCase().includes(lower));
+    if (containing.length > 0) return containing.slice(0, 8);
+    return all.slice(0, 8);
+  }
+
+  const TYPE_LABEL: Record<ClientItem['type'], string> = {
+    vocabulary: 'WORD',
+    phrase: 'PHRASE',
+    sentence: 'SENTENCE',
+    natural: 'NATURAL',
+  };
+
   const search = document.getElementById('vocab-search') as HTMLInputElement | null;
   const lessonFilter = document.getElementById('vocab-lesson-filter') as HTMLSelectElement | null;
   const typeFilter = document.getElementById('vocab-type-filter') as HTMLSelectElement | null;
   const listRoot = document.getElementById('vocab-list');
   const countEl = document.getElementById('result-count');
-
-  // Collect full dataset from DOM once
-  interface Entry extends ReviewItem {
-    el: HTMLElement;
-  }
-  const allEntries: Entry[] = [];
-  listRoot?.querySelectorAll<HTMLElement>('.vocab-item').forEach((el) => {
-    const term = el.querySelector<HTMLElement>('.term')?.textContent ?? '';
-    const meaning = el.querySelector<HTMLElement>('.meaning')?.textContent ?? '';
-    const topic = el.querySelector<HTMLElement>('.topic')?.textContent ?? '';
-    const lessonId = el.dataset.lessonId ?? '';
-    const type = (el.dataset.type ?? 'vocabulary') as ReviewItem['type'];
-    allEntries.push({
-      el,
-      id: `${lessonId}-${term}`,
-      english: term,
-      type,
-      meaningZh: meaning,
-      lessonId,
-      lessonNo: 0,
-      reviewSlug: '',
-      topicTitle: topic || undefined,
-      section: 'other',
-    });
-  });
-
-  function filteredEntries(): Entry[] {
-    const q = (search?.value ?? '').trim().toLowerCase();
-    const lesson = lessonFilter?.value ?? '';
-    const type = typeFilter?.value ?? '';
-    return allEntries.filter((entry) => {
-      const matchesQ =
-        q === '' ||
-        entry.english.toLowerCase().includes(q) ||
-        (entry.meaningZh ?? '').toLowerCase().includes(q);
-      const matchesLesson = lesson === '' || entry.lessonId === lesson;
-      const matchesType = type === '' || entry.type === type;
-      return matchesQ && matchesLesson && matchesType;
-    });
-  }
 
   function applyListFilters(): void {
     if (!listRoot) return;
@@ -199,49 +232,156 @@ const typeCounts = {
     if (countEl) countEl.textContent = String(visible);
   }
 
+  // -------- Flashcard --------
   let currentView: 'list' | 'flashcard' = 'list';
-  let deck: Entry[] = [];
+  let deck: ClientItem[] = [];
   let index = 0;
   let flipped = false;
 
   const flashcardEl = document.getElementById('flashcard');
   const termEl = document.getElementById('fc-term');
+  const englishSmEl = document.getElementById('fc-english-sm');
   const meaningEl = document.getElementById('fc-meaning');
   const topicEl = document.getElementById('fc-topic');
   const idxEl = document.getElementById('fc-index');
   const totalEl = document.getElementById('fc-total');
   const emptyEl = document.getElementById('fc-empty');
+  const frontTypeEl = document.getElementById('fc-front-type');
+  const backTypeEl = document.getElementById('fc-back-type');
+
+  const examplesPanel = document.getElementById('examples-panel') as HTMLDetailsElement | null;
+  const examplesList = document.getElementById('examples-list');
+  const examplesCount = document.getElementById('examples-count');
+  const examplesEmpty = document.getElementById('examples-empty');
+
+  function buildFlashcardDeck(): ClientItem[] {
+    const q = (search?.value ?? '').trim().toLowerCase();
+    const lesson = lessonFilter?.value ?? '';
+    return allItems.filter((entry) => {
+      // Hard rule: flashcard mode = vocab + phrase only.
+      if (entry.type !== 'vocabulary' && entry.type !== 'phrase') return false;
+      const matchesQ =
+        q === '' ||
+        entry.english.toLowerCase().includes(q) ||
+        (entry.meaningZh ?? '').toLowerCase().includes(q);
+      const matchesLesson = lesson === '' || entry.lessonId === lesson;
+      return matchesQ && matchesLesson;
+    });
+  }
+
+  function renderExamplesFor(item: ClientItem): void {
+    if (!examplesList || !examplesCount || !examplesEmpty || !examplesPanel) return;
+    const examples = lookupExamples(item);
+    examplesList.innerHTML = '';
+    if (examples.length === 0) {
+      examplesEmpty.removeAttribute('hidden');
+      examplesCount.textContent = '0 例';
+      return;
+    }
+    examplesEmpty.setAttribute('hidden', 'true');
+    examplesCount.textContent = `${examples.length} 例`;
+
+    for (const ex of examples) {
+      const li = document.createElement('li');
+      li.className = `example-item example-item--${ex.type}`;
+
+      const speakBtn = document.createElement('button');
+      speakBtn.type = 'button';
+      speakBtn.className = 'speak-btn speak-btn--inline';
+      speakBtn.dataset.speakText = ex.english;
+      speakBtn.dataset.speakLang = 'en-US';
+      speakBtn.setAttribute('aria-label', `播放：${ex.english}`);
+      speakBtn.title = `播放發音：${ex.english}`;
+      speakBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+
+      const tag = document.createElement('span');
+      tag.className = 'example-tag';
+      tag.textContent = TYPE_LABEL[ex.type];
+
+      const text = document.createElement('span');
+      text.className = 'example-text';
+      // Highlight the current term within the example
+      const termLower = item.english.toLowerCase();
+      const fullLower = ex.english.toLowerCase();
+      const start = fullLower.indexOf(termLower);
+      if (start >= 0) {
+        const before = ex.english.slice(0, start);
+        const match = ex.english.slice(start, start + item.english.length);
+        const after = ex.english.slice(start + item.english.length);
+        const beforeNode = document.createTextNode(before);
+        const mark = document.createElement('mark');
+        mark.textContent = match;
+        const afterNode = document.createTextNode(after);
+        text.append(beforeNode, mark, afterNode);
+      } else {
+        text.textContent = ex.english;
+      }
+
+      const meaning = document.createElement('span');
+      meaning.className = 'example-meaning';
+      meaning.textContent = ex.meaningZh ? `— ${ex.meaningZh}` : '';
+
+      li.append(speakBtn, tag, text);
+      if (ex.meaningZh) li.append(meaning);
+      examplesList.appendChild(li);
+    }
+
+    wireSpeakButtons(examplesList);
+  }
 
   function renderCard(): void {
-    if (!flashcardEl || !termEl || !meaningEl || !topicEl || !idxEl || !totalEl || !emptyEl)
+    if (
+      !flashcardEl ||
+      !termEl ||
+      !englishSmEl ||
+      !meaningEl ||
+      !topicEl ||
+      !idxEl ||
+      !totalEl ||
+      !emptyEl ||
+      !frontTypeEl ||
+      !backTypeEl ||
+      !examplesPanel
+    )
       return;
-    totalEl.textContent = String(deck.length);
 
+    totalEl.textContent = String(deck.length);
     if (deck.length === 0) {
       flashcardEl.setAttribute('hidden', 'true');
       emptyEl.removeAttribute('hidden');
+      examplesPanel.setAttribute('hidden', 'true');
       idxEl.textContent = '0';
       return;
     }
 
     flashcardEl.removeAttribute('hidden');
     emptyEl.setAttribute('hidden', 'true');
+    examplesPanel.removeAttribute('hidden');
     idxEl.textContent = String(index + 1);
 
     const entry = deck[index];
     if (!entry) return;
     termEl.textContent = entry.english;
-    meaningEl.textContent = entry.meaningZh || '（無中文翻譯，靠情境記）';
+    englishSmEl.textContent = entry.english;
+    meaningEl.textContent = entry.meaningZh || '（這條沒有中文，靠例句去回想用法）';
     topicEl.textContent = entry.topicTitle
-      ? `${entry.lessonId} · ${entry.topicTitle}`
+      ? `${entry.lessonId} · Topic ${entry.topicIndex ?? '?'} · ${entry.topicTitle}`
       : entry.lessonId;
+
+    const typeLabel = TYPE_LABEL[entry.type];
+    frontTypeEl.textContent = typeLabel;
+    frontTypeEl.className = `fc-type-badge fc-type-badge--${entry.type}`;
+    backTypeEl.textContent = typeLabel;
+    backTypeEl.className = `fc-type-badge fc-type-badge--${entry.type}`;
 
     flipped = false;
     flashcardEl.classList.remove('is-flipped');
+    examplesPanel.open = false; // collapse when moving to a new card
+    renderExamplesFor(entry);
   }
 
   function rebuildDeck(): void {
-    deck = filteredEntries();
+    deck = buildFlashcardDeck();
     index = 0;
     renderCard();
   }
@@ -274,10 +414,15 @@ const typeCounts = {
   function shuffleDeck(): void {
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [deck[i], deck[j]] = [deck[j] as Entry, deck[i] as Entry];
+      [deck[i], deck[j]] = [deck[j] as ClientItem, deck[i] as ClientItem];
     }
     index = 0;
     renderCard();
+  }
+
+  function toggleExamples(): void {
+    if (!examplesPanel) return;
+    examplesPanel.open = !examplesPanel.open;
   }
 
   document.querySelectorAll<HTMLButtonElement>('.view-tab').forEach((btn) => {
@@ -319,6 +464,9 @@ const typeCounts = {
     speakCurrent();
   });
 
+  // Don't let clicks inside the examples panel bubble up and flip the card
+  examplesPanel?.addEventListener('click', (ev) => ev.stopPropagation());
+
   document.addEventListener('keydown', (ev) => {
     if (currentView !== 'flashcard') return;
     const tag = (ev.target as HTMLElement | null)?.tagName;
@@ -341,6 +489,10 @@ const typeCounts = {
       case 's':
       case 'S':
         shuffleDeck();
+        break;
+      case 'e':
+      case 'E':
+        toggleExamples();
         break;
     }
   });
@@ -464,7 +616,6 @@ const typeCounts = {
     font-size: 0.875rem;
     margin-top: 0.5rem;
   }
-  .result-count strong,
   .result-count #result-count {
     color: var(--neon-cyan);
   }
@@ -522,7 +673,6 @@ const typeCounts = {
     color: var(--neon-cyan);
     text-shadow: 0 0 8px rgba(0, 255, 245, 0.4);
     word-break: break-word;
-    max-width: 100%;
   }
   .vocab-item--sentence .term,
   .vocab-item--natural .term {
@@ -560,18 +710,28 @@ const typeCounts = {
   .flashcard-stage {
     max-width: 640px;
     margin: 1.5rem auto 0;
-    text-align: center;
+  }
+  .flashcard-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .fc-tag {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 6px rgba(255, 0, 170, 0.4);
   }
   .flashcard-count {
-    font-family: var(--font-mono);
     color: var(--muted);
-    font-size: 0.875rem;
-    margin-bottom: 0.75rem;
-    letter-spacing: 0.1em;
   }
   .flashcard-count span {
     color: var(--neon-cyan);
   }
+
   .flashcard {
     position: relative;
     width: 100%;
@@ -617,8 +777,25 @@ const typeCounts = {
   .flashcard.is-flipped .flashcard-back {
     transform: rotateY(0deg);
   }
+
+  .fc-type-badge {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid currentColor;
+    opacity: 0.85;
+  }
+  .fc-type-badge--vocabulary { color: var(--neon-yellow); }
+  .fc-type-badge--phrase { color: var(--neon-cyan); }
+  .fc-type-badge--sentence { color: var(--neon-magenta); }
+  .fc-type-badge--natural { color: var(--neon-purple); }
+
   .flashcard-term {
-    font-size: clamp(1.1rem, 3.2vw, 2rem);
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
     font-weight: 600;
     color: var(--neon-cyan);
     text-shadow:
@@ -627,27 +804,145 @@ const typeCounts = {
     letter-spacing: 0.02em;
     word-break: break-word;
     line-height: 1.4;
+    text-align: center;
+  }
+  .flashcard-english-sm {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+    font-family: var(--font-mono);
+    text-align: center;
   }
   .flashcard-meaning {
-    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-size: clamp(1.15rem, 3vw, 1.55rem);
     color: var(--fg);
     text-shadow: 0 0 6px rgba(255, 0, 170, 0.35);
     line-height: 1.5;
+    text-align: center;
+    margin-bottom: 0.5rem;
   }
   .flashcard-topic {
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--muted);
     letter-spacing: 0.05em;
+    font-family: var(--font-mono);
+    text-align: center;
   }
   .flashcard-hint {
-    margin-top: 0.75rem;
+    margin-top: 1rem;
     font-size: 0.75rem;
     color: var(--muted);
     letter-spacing: 0.1em;
+    font-family: var(--font-mono);
   }
+
+  /* ---------------- Examples panel ---------------- */
+  .examples-panel {
+    margin-top: 0.75rem;
+    background: rgba(11, 13, 21, 0.7);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--neon-purple);
+    overflow: hidden;
+    clip-path: polygon(
+      8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px
+    );
+  }
+  .examples-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--neon-purple);
+    text-shadow: 0 0 6px rgba(182, 92, 255, 0.4);
+    transition: background 0.15s ease;
+  }
+  .examples-summary::-webkit-details-marker { display: none; }
+  .examples-summary:hover {
+    background: rgba(182, 92, 255, 0.06);
+  }
+  .examples-panel[open] .examples-summary-text::before {
+    content: '△ ';
+  }
+  .examples-panel:not([open]) .examples-summary-text::before {
+    content: '▽ ';
+  }
+  .examples-summary-text {
+    /* arrow injected via :before */
+  }
+  .examples-summary-text::before {
+    margin-right: 0.25rem;
+  }
+  /* Override the literal '▽ ' inside the HTML so we don't get double arrows */
+  .examples-summary-text {
+    text-indent: 0;
+  }
+  .examples-summary-count {
+    color: var(--muted);
+    font-size: 0.7rem;
+  }
+  .examples-list {
+    list-style: none;
+    padding: 0 1rem 1rem;
+    margin: 0;
+  }
+  .example-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0;
+    border-top: 1px dashed var(--border);
+    line-height: 1.55;
+  }
+  .example-item:first-child {
+    border-top: none;
+  }
+  .example-tag {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    padding: 0.05rem 0.4rem;
+    border: 1px solid currentColor;
+    opacity: 0.8;
+  }
+  .example-item--sentence .example-tag { color: var(--neon-magenta); }
+  .example-item--natural .example-tag { color: var(--neon-purple); }
+  .example-text {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--fg);
+    word-break: break-word;
+  }
+  .example-text mark {
+    background: rgba(0, 255, 245, 0.18);
+    color: var(--neon-cyan);
+    padding: 0 0.2rem;
+    text-shadow: 0 0 6px rgba(0, 255, 245, 0.5);
+    border-radius: 2px;
+  }
+  .example-meaning {
+    color: var(--muted);
+    font-size: 0.8rem;
+    width: 100%;
+    padding-left: calc(1.5rem + 0.5rem);
+  }
+  .examples-empty {
+    margin: 0;
+    padding: 0 1rem 1rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+  }
+
   .flashcard-controls {
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
     display: flex;
     gap: 0.5rem;
     justify-content: center;
@@ -682,6 +977,7 @@ const typeCounts = {
     font-size: 0.75rem;
     color: var(--muted);
     letter-spacing: 0.03em;
+    text-align: center;
   }
   .flashcard-shortcuts kbd {
     background: #0b0d15;
@@ -694,6 +990,7 @@ const typeCounts = {
   .flashcard-empty {
     margin-top: 4rem;
     color: var(--muted);
+    text-align: center;
   }
 
   .glitch {
