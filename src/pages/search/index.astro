@@ -3,68 +3,153 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 const pagefindBase = `${base}pagefind/`;
+const pagefindUiCss = `${pagefindBase}pagefind-ui.css`;
+const pagefindUiJs = `${pagefindBase}pagefind-ui.js`;
 ---
 
 <BaseLayout title="全文搜尋" description="在所有 lesson 內容中搜尋">
   <nav class="breadcrumb"><a href={base}>← 首頁</a></nav>
-  <h1>全文搜尋</h1>
-  <p class="meta">搜尋所有 lesson 的內容（預習、複習、topic、單字）。</p>
-  <div id="search" />
-  <p class="alt">
-    只想查單字？ <a href={`${base}vocabulary/`}>前往單字索引</a>
-  </p>
-</BaseLayout>
+  <h1 class="glitch" data-text="SEARCH">SEARCH</h1>
+  <p class="meta">&gt; 搜尋所有 lesson 的預習、複習、topic、單字</p>
 
-<link rel="stylesheet" href={`${pagefindBase}pagefind-ui.css`} />
-<script is:inline define:vars={{ pagefindBase, base }}>
-  window.addEventListener('DOMContentLoaded', async () => {
-    try {
-      const mod = await import(/* @vite-ignore */ `${pagefindBase}pagefind-ui.js`);
-      const Ctor = mod.PagefindUI ?? mod.default?.PagefindUI ?? mod.default;
-      if (!Ctor) throw new Error('PagefindUI constructor not found');
-      new Ctor({
-        element: '#search',
-        showSubResults: true,
-        bundlePath: pagefindBase,
-        translations: {
-          placeholder: '搜尋…',
-          clear_search: '清除',
-          load_more: '載入更多',
-          search_label: '搜尋',
-          filters_label: '篩選',
-          zero_results: '沒有符合的結果',
-          many_results: '共 [SEARCH_TERM] 筆',
-          one_result: '找到 [SEARCH_TERM] 筆',
-          alt_search: '未找到 [SEARCH_TERM]，改搜 [DIFFERENT_TERM]',
-          search_suggestion: '試試 [DIFFERENT_TERM]',
-          searching: '搜尋中…',
-        },
-      });
-    } catch (err) {
-      const host = document.getElementById('search');
-      if (host) {
-        host.innerHTML =
-          '<p>搜尋索引尚未產生。請在 <code>npm run build</code> 後跑 <code>npx pagefind --site dist</code>，然後重新部署。</p>';
+  <div id="search" class="pagefind-host"></div>
+
+  <noscript>
+    <p class="warn">這個搜尋功能需要 JavaScript 才能運作。</p>
+  </noscript>
+
+  <p class="alt">
+    只想查單字／片語？ <a href={`${base}vocabulary/`}>前往單字索引</a>
+  </p>
+
+  <link rel="stylesheet" href={pagefindUiCss} />
+  <script is:inline src={pagefindUiJs} defer></script>
+  <script is:inline define:vars={{ pagefindBase }}>
+    document.addEventListener('DOMContentLoaded', () => {
+      function init() {
+        const Ctor = (window).PagefindUI;
+        if (typeof Ctor !== 'function') {
+          // pagefind-ui.js may still be parsing; try again on next tick
+          setTimeout(init, 60);
+          return;
+        }
+        try {
+          new Ctor({
+            element: '#search',
+            bundlePath: pagefindBase,
+            showSubResults: true,
+            resetStyles: false,
+            translations: {
+              placeholder: '搜尋…',
+              clear_search: '清除',
+              load_more: '載入更多',
+              search_label: '搜尋',
+              filters_label: '篩選',
+              zero_results: '沒有符合的結果',
+              many_results: '共 [SEARCH_TERM] 筆',
+              one_result: '找到 [SEARCH_TERM] 筆',
+              alt_search: '未找到 [SEARCH_TERM]，改搜 [DIFFERENT_TERM]',
+              search_suggestion: '試試 [DIFFERENT_TERM]',
+              searching: '搜尋中…',
+            },
+          });
+        } catch (err) {
+          const host = document.getElementById('search');
+          if (host) {
+            host.innerHTML =
+              '<p class="warn">搜尋初始化失敗，請重新整理頁面試試。</p>';
+          }
+          console.error('[pagefind]', err);
+        }
       }
-      console.warn('[pagefind]', err);
-    }
-  });
-</script>
+      // Give the deferred script a tick to register PagefindUI on window
+      setTimeout(init, 0);
+    });
+  </script>
+</BaseLayout>
 
 <style>
   .breadcrumb {
     margin-bottom: 1rem;
     font-size: 0.875rem;
+    font-family: var(--font-mono);
+  }
+  h1 {
+    font-family: var(--font-display);
+    letter-spacing: 0.1em;
+    font-size: 2.25rem;
+    margin: 0.25rem 0 0.5rem;
   }
   .meta {
     color: var(--muted);
+    font-family: var(--font-mono);
+    margin: 0 0 1.5rem;
   }
-  #search {
-    margin-top: 1.5rem;
+  .pagefind-host {
+    margin-top: 1rem;
+    /* Keep the Pagefind UI visible against our dark background */
+    --pagefind-ui-primary: #00fff5;
+    --pagefind-ui-text: #e6e7f0;
+    --pagefind-ui-background: #0b0d15;
+    --pagefind-ui-border: #1d2232;
+    --pagefind-ui-tag: #151821;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 4px;
+    --pagefind-ui-image-border-radius: 4px;
+    --pagefind-ui-image-box-ratio: 3 / 2;
+    --pagefind-ui-font: var(--font-ui);
   }
   .alt {
     margin-top: 2rem;
     color: var(--muted);
     font-size: 0.875rem;
+    font-family: var(--font-mono);
+  }
+  .warn {
+    color: var(--neon-yellow);
+    background: rgba(255, 250, 107, 0.06);
+    border-left: 2px solid var(--neon-yellow);
+    padding: 0.75rem 1rem;
+  }
+
+  .glitch {
+    position: relative;
+    display: inline-block;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px rgba(0, 255, 245, 0.55);
+  }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+  }
+  .glitch::before {
+    color: var(--neon-magenta);
+    animation: glitch-1 3s infinite linear alternate-reverse;
+    clip-path: inset(10% 0 70% 0);
+    opacity: 0.7;
+  }
+  .glitch::after {
+    color: var(--neon-purple);
+    animation: glitch-2 2.5s infinite linear alternate-reverse;
+    clip-path: inset(70% 0 10% 0);
+    opacity: 0.7;
+  }
+  @keyframes glitch-1 {
+    0%, 90%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 1px); }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(1px, 2px); }
+    80% { transform: translate(2px, -1px); }
+  }
+  @keyframes glitch-2 {
+    0%, 85%, 100% { transform: translate(0); }
+    30% { transform: translate(2px, -2px); }
+    50% { transform: translate(-2px, 1px); }
+    70% { transform: translate(1px, -1px); }
   }
 </style>
