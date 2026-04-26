@@ -285,6 +285,10 @@ const clientItems = items.map((it) => ({
       const li = document.createElement('li');
       li.className = `example-item example-item--${ex.type}`;
 
+      // Header row: speak button + type tag (tag is its own block-level element)
+      const head = document.createElement('div');
+      head.className = 'example-head';
+
       const speakBtn = document.createElement('button');
       speakBtn.type = 'button';
       speakBtn.className = 'speak-btn speak-btn--inline';
@@ -298,9 +302,11 @@ const clientItems = items.map((it) => ({
       tag.className = 'example-tag';
       tag.textContent = TYPE_LABEL[ex.type];
 
-      const text = document.createElement('span');
+      head.append(speakBtn, tag);
+
+      // English sentence on its own line; highlight the current term within
+      const text = document.createElement('p');
       text.className = 'example-text';
-      // Highlight the current term within the example
       const termLower = item.english.toLowerCase();
       const fullLower = ex.english.toLowerCase();
       const start = fullLower.indexOf(termLower);
@@ -308,21 +314,24 @@ const clientItems = items.map((it) => ({
         const before = ex.english.slice(0, start);
         const match = ex.english.slice(start, start + item.english.length);
         const after = ex.english.slice(start + item.english.length);
-        const beforeNode = document.createTextNode(before);
-        const mark = document.createElement('mark');
-        mark.textContent = match;
-        const afterNode = document.createTextNode(after);
-        text.append(beforeNode, mark, afterNode);
+        text.append(
+          document.createTextNode(before),
+          Object.assign(document.createElement('mark'), { textContent: match }),
+          document.createTextNode(after),
+        );
       } else {
         text.textContent = ex.english;
       }
 
-      const meaning = document.createElement('span');
-      meaning.className = 'example-meaning';
-      meaning.textContent = ex.meaningZh ? `— ${ex.meaningZh}` : '';
+      li.append(head, text);
 
-      li.append(speakBtn, tag, text);
-      if (ex.meaningZh) li.append(meaning);
+      if (ex.meaningZh) {
+        const meaning = document.createElement('p');
+        meaning.className = 'example-meaning';
+        meaning.textContent = ex.meaningZh;
+        li.append(meaning);
+      }
+
       examplesList.appendChild(li);
     }
 
@@ -921,32 +930,34 @@ const clientItems = items.map((it) => ({
     margin: 0;
   }
   .example-item {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 0;
+    padding: 0.7rem 0 0.85rem;
     border-top: 1px dashed var(--border);
     line-height: 1.55;
   }
   .example-item:first-child {
     border-top: none;
   }
+  .example-head {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.4rem;
+  }
   .example-tag {
+    display: inline-block;
     font-family: var(--font-mono);
     font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    padding: 0.05rem 0.4rem;
+    letter-spacing: 0.15em;
+    padding: 0.1rem 0.5rem;
     border: 1px solid currentColor;
-    opacity: 0.8;
+    opacity: 0.85;
   }
   .example-item--sentence .example-tag { color: var(--neon-magenta); }
   .example-item--natural .example-tag { color: var(--neon-purple); }
   .example-text {
-    flex: 1;
-    min-width: 0;
+    margin: 0;
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--fg);
     word-break: break-word;
   }
@@ -958,10 +969,13 @@ const clientItems = items.map((it) => ({
     border-radius: 2px;
   }
   .example-meaning {
+    margin: 0.25rem 0 0;
     color: var(--muted);
     font-size: 0.8rem;
-    width: 100%;
-    padding-left: calc(1.5rem + 0.5rem);
+  }
+  .example-meaning::before {
+    content: '— ';
+    opacity: 0.55;
   }
   .examples-empty {
     margin: 0;
