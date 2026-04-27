@@ -28,8 +28,8 @@ tags: []
 - `uncomfortable`：不舒服；不自在
 
 ### 文法／用法
-- `How was your weekend?`：你的週末過得怎麼樣？
-- `What did you do on Saturday / on Sunday?`：你星期六／星期天做了什麼？
+- `How was your weekend?`：週末過得怎麼樣？
+- `What did you do on Saturday / on Sunday?`：星期六／星期天做了什麼？
 - 用過去式描述剛過去的週末活動。
 
 ### 學生表達待加強
@@ -132,7 +132,7 @@ tags: []
 - `He is preparing for a new job.`：他正在為一份新工作做準備。
 
 ### 補充例句
-- `You prepare dinner, but you prepare for an exam.`：晚餐是直接準備東西本身，但考試是為某件事做準備。
+- `You prepare dinner, but you prepare for an exam.`：晚餐是直接準備東西本身；考試則是為某件事做準備。
 - `A project is part of your job, not the same as your job.`：專案是工作的一部分，不等於整份工作。
 
 ## Topic 5：航空業與飛行員申請情境
@@ -379,13 +379,12 @@ tags: []
 
 ## 下週注意事項
 
-- 先重聽一次 `The Survivor Episode 1: Finding Jane`，至少能說出：
-  發生了什麼事故、有幾位生還者、為什麼她叫 `Jane Doe`
-- 練熟以下口說句型：
-  `There is only one survivor.`：只有一位生還者；`They couldn't find any ID on her.`：他們在她身上找不到任何證件；`The story is set in America.`：這個故事是以美國為背景。
-- 把 `season two`、`prepare for`、`airline` 各自造 2 句。
-- 複習 `put down`、`break up`、`set in` 的意思，不要只背中文。
-- 下次上課前，可先準備 30 秒英文回答：
-  `What did you do last weekend?`、`What is The Survivor about?`
-- 如果下次要接 houses / innovations 主題，先熟悉：
-  `technology`、`innovation`、`smart house`、`robot`、`convenient`
+- 下次課程會延續本週的教材脈絡，包含 `The Survivor Episode 1: Finding Jane` 的故事理解。
+- 下次可能會接到 houses / innovations 相關主題，包含：
+  - `technology`
+  - `innovation`
+  - `smart house`
+  - `robot`
+  - `convenient`
+- 若內容太有挑戰，老師會把影片或文章拆開來逐步說明。
+- 接下來課程安排可能包含實體與線上上課的切換。

@@ -2,13 +2,13 @@
 type: review
 lessonId: lesson-002
 lessonNo: 2
-title: 英文課後學習整理
+title: 260328 英文課程複習講義
 slug: lesson-002-review
 sourcePath: english-courses/lesson-002/records/260328-lesson-002-review.md
 published: true
 tags: []
 ---
-# 英文課後學習整理
+# 260328 英文課程複習講義
 
 ## Topic 1：課程時間調整與下次上課安排
 ### Topic 摘要
@@ -28,9 +28,9 @@ tags: []
 - 比較級誤用：`more better`
 
 ### 更自然的說法
-- `Can we have class on Tuesday, March 31st at 7 PM?`
-- `Tuesday works for me.`
-- `7 PM is better for me.`
+- `Can we have class on Tuesday, March 31st at 7 PM?`：可以在 3 月 31 日星期二晚上 7 點上課嗎？
+- `Tuesday works for me.`：星期二對我來說可以。
+- `7 PM is better for me.`：晚上 7 點對我來說比較好。
 
 ## Topic 2：Osaka 專案英文
 ### Topic 摘要
@@ -45,29 +45,29 @@ tags: []
 
 ### 文法／用法
 - 問未來安排：
-  - `When will you go to Osaka?`
-  - `When will you kick off the project in Osaka?`
+  - `When will you go to Osaka?`：什麼時候會去大阪？
+  - `When will you kick off the project in Osaka?`：大阪專案什麼時候會啟動？
 - 問已開始的專案：
-  - `When did you kick off this project?`
+  - `When did you kick off this project?`：這個專案是什麼時候啟動的？
 - 表達公司設點：
-  - `My company wants to set up a branch in Japan.`
-  - `We are setting up a branch in Osaka.`
+  - `My company wants to set up a branch in Japan.`：公司想在日本設立分公司／分部。
+  - `We are setting up a branch in Osaka.`：公司正在大阪設立分部。
 
 ### 學生表達待加強
-- `open maybe like an office`
-- `another company`
+- `open maybe like an office`：想說 open，也許像辦公室；應改成 set up a branch
+- `another company`：另一家公司；此處若是同公司海外據點，應改成 branch
 - 對 `kick off` 的語感還沒建立，容易卡在不知道它其實就是 `start`
 
 ### 更自然的說法
-- `My company is setting up a branch in Osaka.`
-- `I’ll go there to help with the new branch.`
-- `We kicked off the Osaka project last month.`
-- `I’ll depart from Taoyuan Airport and arrive at Kansai Airport.`
+- `My company is setting up a branch in Osaka.`：公司正在大阪設立分部。
+- `I’ll go there to help with the new branch.`：我會去那裡協助新的分部。
+- `We kicked off the Osaka project last month.`：大阪專案上個月啟動了。
+- `I’ll depart from Taoyuan Airport and arrive at Kansai Airport.`：我會從桃園機場出發，抵達關西機場。
 
 ### 補充例句
-- `Our company plans to set up a branch in Japan this year.`
-- `We kicked off the Osaka project in February.`
-- `I’ll be in Osaka for one month on a business trip.`
+- `Our company plans to set up a branch in Japan this year.`：公司計畫今年在日本設立分部。
+- `We kicked off the Osaka project in February.`：大阪專案在二月啟動。
+- `I’ll be in Osaka for one month on a business trip.`：我會在大阪出差一個月。
 
 ## Topic 3：`exciting / excited` 與 `-ing / -ed` 形容詞差異
 ### Topic 摘要
@@ -77,32 +77,32 @@ tags: []
 - 事物本身有某種特質，用 `-ing`
   - `The trip is exciting.`
 - 人感受到某種情緒，用 `-ed`
-  - `I feel excited.`
+  - `I feel excited.`：我感到興奮。
 - 同一組邏輯也適用：
   - `interesting / interested`
   - `boring / bored`
   - `fascinating / fascinated`
 
 ### 文法／用法
-- `A is exciting to me.`
-- `I feel excited.`
-- `The book is interesting, so I feel interested.`
-- `Sleep is boring, so I feel bored.`
+- `A is exciting to me.`：A 對我來說很令人興奮。
+- `I feel excited.`：我感到興奮。
+- `The book is interesting, so I feel interested.`：這本書很有趣，所以我對它感興趣。
+- `Sleep is boring, so I feel bored.`：睡覺這件事很無聊，所以我覺得無聊。
 
 ### 學生表達待加強
-- `I am exciting`
-- `I excited`
+- `I am exciting`：錯誤說法；會變成「我令人興奮」
+- `I excited`：錯誤說法；缺少 be 動詞或 feel
 - 感受與事物特質容易混在一起
 
 ### 更自然的說法
-- `The trip is exciting, so I feel excited.`
-- `I feel excited about the trip to Japan.`
-- `This book is interesting, so I’m interested in reading it.`
+- `The trip is exciting, so I feel excited.`：這趟旅行很令人興奮，所以我感到興奮。
+- `I feel excited about the trip to Japan.`：我對日本行感到興奮。
+- `This book is interesting, so I’m interested in reading it.`：這本書很有趣，所以我有興趣讀它。
 
 ### 補充例句
-- `The movie was boring, so I felt bored.`
-- `Her story is fascinating, and I’m fascinated by it.`
-- `The new job sounds exciting.`
+- `The movie was boring, so I felt bored.`：那部電影很無聊，所以我覺得無聊。
+- `Her story is fascinating, and I’m fascinated by it.`：她的故事很迷人，我被它吸引。
+- `The new job sounds exciting.`：這份新工作聽起來令人興奮。
 
 ## Topic 4：`food poisoning / indigestion / strong stomach`
 ### Topic 摘要
@@ -114,25 +114,25 @@ tags: []
 - `strong stomach` 不只指「胃很強」，也可指面對噁心、血腥場面承受度高
 
 ### 文法／用法
-- `I got food poisoning.`
-- `I had indigestion after eating a spicy hamburger.`
-- `He has a strong stomach.`
-- `You need a strong stomach to be a doctor.`
+- `I got food poisoning.`：我食物中毒了。
+- `I had indigestion after eating a spicy hamburger.`：我吃了辣漢堡後消化不良。
+- `He has a strong stomach.`：他的胃很強／很能承受刺激。
+- `You need a strong stomach to be a doctor.`：當醫生需要很強的承受力。
 
 ### 學生表達待加強
 - 容易把 `food poisoning` 和 `indigestion` 混在一起
 - 飲食原因與身體反應的句子常不夠完整
 
 ### 更自然的說法
-- `I think it was indigestion, not food poisoning.`
-- `The food was too oily and too heavy.`
-- `I rarely get indigestion.`
-- `I have a strong stomach.`
+- `I think it was indigestion, not food poisoning.`：我覺得那是消化不良，不是食物中毒。
+- `The food was too oily and too heavy.`：那個食物太油、太厚重。
+- `I rarely get indigestion.`：我很少消化不良。
+- `I have a strong stomach.`：我的胃很強。
 
 ### 補充例句
-- `I got food poisoning after eating old seafood.`
-- `I had indigestion because I ate too much fried food.`
-- `She has a strong stomach and can watch horror movies easily.`
+- `I got food poisoning after eating old seafood.`：我吃了不新鮮的海鮮後食物中毒。
+- `I had indigestion because I ate too much fried food.`：我因為吃太多炸物而消化不良。
+- `She has a strong stomach and can watch horror movies easily.`：她承受力很強，可以輕鬆看恐怖片。
 
 ## Topic 5：One Piece 新聞閱讀
 ### Topic 摘要
@@ -152,11 +152,11 @@ tags: []
 
 ### 文法／用法
 - 描述事件：
-  - `Tens of thousands attended the parade.`
-  - `Fans dressed up as characters from the series.`
+  - `Tens of thousands attended the parade.`：數萬人參加了遊行。
+  - `Fans dressed up as characters from the series.`：粉絲扮成這部作品中的角色。
 - 說明原因：
-  - `They did it because they are big fans of One Piece.`
-  - `The event celebrated the new season.`
+  - `They did it because they are big fans of One Piece.`：他們這麼做是因為非常喜歡《One Piece》。
+  - `The event celebrated the new season.`：這個活動是為了慶祝新一季。
 
 ### 學生表達待加強
 - 摘要文章時句子常斷裂
@@ -164,9 +164,9 @@ tags: []
 - `enemy` / `anime` 混淆
 
 ### 更自然的說法
-- `It was a big parade in Kaohsiung.`
-- `Many fans did One Piece cosplay.`
-- `They joined the event because they love the series.`
+- `It was a big parade in Kaohsiung.`：那是在高雄的大型遊行。
+- `Many fans did One Piece cosplay.`：很多粉絲扮成《One Piece》的角色。
+- `They joined the event because they love the series.`：他們參加活動是因為喜歡這部作品。
 
 ## Topic 6：新聞閱讀重點字彙
 ### Topic 摘要
@@ -185,20 +185,20 @@ tags: []
 - `live action`：真人版
 
 ### 文法／用法
-- `Taiwan Focus is a news outlet.`
-- `The venue was full of people.`
-- `The parade kicked off at 3 PM.`
-- `The plane departed from Montreal.`
-- `It is a live action version of the anime.`
+- `Taiwan Focus is a news outlet.`：Taiwan Focus 是一家新聞媒體。
+- `The venue was full of people.`：活動場地擠滿了人。
+- `The parade kicked off at 3 PM.`：遊行在下午 3 點開始。
+- `The plane departed from Montreal.`：飛機從蒙特婁出發。
+- `It is a live action version of the anime.`：那是這部動畫的真人版。
 
 ### 學生表達待加強
 - 單字知道中文，但還不會放進完整句
 - `kick off`、`depart`、`live action` 這類偏語境字需要多造句
 
 ### 更自然的說法
-- `This news outlet reports in English.`
-- `The event drew tens of thousands of fans.`
-- `The parade kicked off in the afternoon.`
+- `This news outlet reports in English.`：這家新聞媒體用英文報導。
+- `The event drew tens of thousands of fans.`：這個活動吸引了數萬名粉絲。
+- `The parade kicked off in the afternoon.`：遊行在下午開始。
 
 ## Topic 7：旅行詞彙分級：`trip / journey / voyage / safari`
 ### Topic 摘要
@@ -211,23 +211,23 @@ tags: []
 - `safari`：去看野生動物的旅行，常見於非洲語境
 
 ### 文法／用法
-- `My trip to Osaka is just a business trip.`
-- `A trip to Italy would be a real journey.`
-- `A safari in Africa would be an amazing voyage.`
+- `My trip to Osaka is just a business trip.`：我的大阪行只是商務出差。
+- `A trip to Italy would be a real journey.`：去義大利會是一趟真正有過程感的旅程。
+- `A safari in Africa would be an amazing voyage.`：非洲野生動物之旅會是一趟很棒的冒險旅程。
 
 ### 學生表達待加強
 - 容易把這些詞當同義詞直接互換
 - 表達夢想旅行時句子結構較鬆散
 
 ### 更自然的說法
-- `Going to Osaka for work is just a business trip.`
-- `Traveling around northern Italy would be a wonderful journey.`
-- `My dream voyage is a safari in Africa.`
+- `Going to Osaka for work is just a business trip.`：去大阪工作只是商務出差。
+- `Traveling around northern Italy would be a wonderful journey.`：在義大利北部旅行會是一趟很棒的旅程。
+- `My dream voyage is a safari in Africa.`：我夢想中的壯遊是去非洲 safari。
 
 ### 補充例句
-- `I took a short trip to Bangkok last month.`
-- `Her journey through Europe changed her a lot.`
-- `They went on a voyage across the Atlantic.`
+- `I took a short trip to Bangkok last month.`：我上個月去曼谷短途旅行。
+- `Her journey through Europe changed her a lot.`：她的歐洲旅程改變了她很多。
+- `They went on a voyage across the Atlantic.`：他們展開了一趟橫跨大西洋的航行。
 
 ## Topic 8：動漫與影視溝通 Topic
 ### Topic 摘要
@@ -236,29 +236,29 @@ tags: []
 ### 老師補充重點
 - 動漫作品名保留原文
 - 可以練這些句型：
-  - `I’m a big fan of ...`
-  - `I prefer the anime.`
-  - `I haven’t watched the live action version.`
-  - `I like the old Batman movies.`
+  - `I’m a big fan of ...`：我是……的忠實粉絲。
+  - `I prefer the anime.`：我比較喜歡動畫版。
+  - `I haven’t watched the live action version.`：我還沒看真人版。
+  - `I like the old Batman movies.`：我喜歡舊版 Batman 電影。
 
 ### 文法／用法
-- `I’ve only watched the anime.`
-- `I haven’t watched the Netflix version yet.`
-- `I prefer the original anime to the live action version.`
+- `I’ve only watched the anime.`：我只看過動畫版。
+- `I haven’t watched the Netflix version yet.`：我還沒看 Netflix 版本。
+- `I prefer the original anime to the live action version.`：比起真人版，我更喜歡原版動畫。
 
 ### 學生表達待加強
 - 講作品喜好時，常只停在單字層級，句子沒有完整展開
 - `anime`、`animation`、`live action` 需要穩定分辨
 
 ### 更自然的說法
-- `I only watch anime.`
-- `I haven’t watched the live action version yet.`
-- `I’m a big fan of Demon Slayer and Frieren.`
+- `I only watch anime.`：我只看動畫。
+- `I haven’t watched the live action version yet.`：我還沒看真人版。
+- `I’m a big fan of Demon Slayer and Frieren.`：我是《鬼滅之刃》和《葬送的芙莉蓮》的忠實粉絲。
 
 ### 補充例句
-- `I like the anime more than the live action version.`
-- `Batman is one of my favorite comic-book characters.`
-- `Frieren has a very unique atmosphere.`
+- `I like the anime more than the live action version.`：比起真人版，我更喜歡動畫版。
+- `Batman is one of my favorite comic-book characters.`：Batman 是我最喜歡的漫畫角色之一。
+- `Frieren has a very unique atmosphere.`：《葬送的芙莉蓮》有很獨特的氛圍。
 
 ## Topic 9：`pretentious` 與作品評論表達
 ### Topic 摘要
@@ -270,23 +270,23 @@ tags: []
 - 不只是 `serious`，而是「太想表現得高級」
 
 ### 文法／用法
-- `I think those movies are pretentious.`
-- `The director is trying too hard to be serious.`
-- `It feels too pretentious.`
+- `I think those movies are pretentious.`：我覺得那些電影有點太裝深刻。
+- `The director is trying too hard to be serious.`：導演太刻意想讓作品顯得嚴肅。
+- `It feels too pretentious.`：它感覺太裝深刻。
 
 ### 學生表達待加強
 - 抽象評價詞還不夠熟，容易只說 `good / bad / boring`
 - 需要更多「為什麼」的延伸句
 
 ### 更自然的說法
-- `I think Christopher Nolan’s Batman movies are too pretentious.`
-- `They’re too serious and not as fun.`
-- `The older Batman movies are more fun and more rewatchable.`
+- `I think Christopher Nolan’s Batman movies are too pretentious.`：我覺得 Christopher Nolan 的 Batman 電影太裝深刻。
+- `They’re too serious and not as fun.`：那些電影太嚴肅，沒有那麼好玩。
+- `The older Batman movies are more fun and more rewatchable.`：舊版 Batman 電影比較有趣，也比較值得重看。
 
 ### 補充例句
-- `The movie looks stylish, but it feels pretentious.`
-- `His comments sound a little pretentious.`
-- `I prefer films that are smart but not pretentious.`
+- `The movie looks stylish, but it feels pretentious.`：這部電影看起來很有風格，但感覺太裝深刻。
+- `His comments sound a little pretentious.`：他的評論聽起來有點裝。
+- `I prefer films that are smart but not pretentious.`：我比較喜歡聰明但不裝深刻的電影。
 
 ## Topic 10：程度判斷與教材難度校準
 ### Topic 摘要
@@ -298,9 +298,9 @@ tags: []
 - 後續會用同故事的 `A2 / B1 / B2` 版本測試最適合的級別
 
 ### 文法／用法
-- `This article is a little too difficult.`
-- `This version is easier.`
-- `Tell me which level works better for you.`
+- `This article is a little too difficult.`：這篇文章有點太難。
+- `This version is easier.`：這個版本比較簡單。
+- `Tell me which level works better for you.`：告訴我哪個程度比較適合。
 
 ### 學生表達待加強
 - 遇到較難文本時，理解主線還可以，但字彙密度一高就容易中斷

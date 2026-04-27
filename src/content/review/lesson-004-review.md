@@ -26,17 +26,17 @@ tags: []
 - `stay home`：待在家
 
 ### 文法／用法
-- `Did you go anywhere during the holiday?`
-- `I didn’t go anywhere during the holiday.`
-- `I stayed home and prepared for work.`
+- `Did you go anywhere during the holiday?`：假期期間有去哪裡嗎？
+- `I didn’t go anywhere during the holiday.`：假期期間沒有去哪裡。
+- `I stayed home and prepared for work.`：我待在家裡並準備工作。
 
 ### 學生表達待加強
-- `I'm not go to anywhere.`
-- `I prepare my class.`
+- `I'm not go to anywhere.`：錯誤說法；應改成 I didn’t go anywhere。
+- `I prepare my class.`：語意不完整；若是準備課程，可說 I prepared for my class。
 
 ### 更自然的說法
-- `I didn’t go anywhere during the holiday.`
-- `I stayed home, rested, and prepared for my class.`
+- `I didn’t go anywhere during the holiday.`：假期期間沒有去哪裡。
+- `I stayed home, rested, and prepared for my class.`：我待在家裡休息，並準備課程。
 
 ## Topic 2：工作中的 training、teacher 與 instructor
 
@@ -55,18 +55,18 @@ tags: []
 - `syllabus`：課程大綱
 
 ### 文法／用法
-- `I’ll be the instructor for the training.`
-- `I’m preparing a technical training session for another company.`
-- `The language of instruction is not English.`
+- `I’ll be the instructor for the training.`：我會擔任這場訓練的講師。
+- `I’m preparing a technical training session for another company.`：我正在為另一家公司準備一場技術訓練。
+- `The language of instruction is not English.`：教學語言不是英文。
 
 ### 學生表達待加強
-- `I will the teacher.`
-- `I prepare for another company in teaching the technical skills.`
+- `I will the teacher.`：錯誤說法；缺少 be 動詞且職場語境更適合 instructor。
+- `I prepare for another company in teaching the technical skills.`：不自然說法；應改成準備一場 technical training session。
 
 ### 更自然的說法
-- `I’ll be the instructor for the training.`
-- `I’m preparing a technical training session for another company.`
-- `I’m getting ready to teach a professional training course.`
+- `I’ll be the instructor for the training.`：我會擔任這場訓練的講師。
+- `I’m preparing a technical training session for another company.`：我正在為另一家公司準備一場技術訓練。
+- `I’m getting ready to teach a professional training course.`：我正在準備教授一門專業訓練課程。
 
 ## Topic 3：people / peoples、time / times 的意思差異
 
@@ -88,19 +88,19 @@ tags: []
 - `society`：社會
 
 ### 文法／用法
-- `Taiwan has about 23 to 24 million people.`
-- `The Japanese are often described as a polite people.`
-- `America is famous for having many different peoples.`
-- `I don’t have much time.`
-- `I’ve been to Japan three times.`
+- `Taiwan has about 23 to 24 million people.`：台灣大約有 2300 到 2400 萬人。
+- `The Japanese are often described as a polite people.`：日本人常被形容為有禮貌的民族。
+- `America is famous for having many different peoples.`：美國以擁有許多不同族群聞名。
+- `I don’t have much time.`：我沒有太多時間。
+- `I’ve been to Japan three times.`：我去過日本三次。
 
 ### 學生表達待加強
 - 容易把 `people / peoples`、`time / times` 當成單純單複數處理。
 
 ### 更自然的說法
-- `Taiwan has about 24 million people.`
-- `The Japanese are often described as a polite people.`
-- `I’ve been to Japan several times.`
+- `Taiwan has about 24 million people.`：台灣大約有 2400 萬人。
+- `The Japanese are often described as a polite people.`：日本人常被形容為有禮貌的民族。
+- `I’ve been to Japan several times.`：我去過日本好幾次。
 
 ## Topic 4：beginner、noob、green 與 learn the ropes
 
@@ -120,16 +120,16 @@ tags: []
 - `learn the ropes / know the ropes`：熟悉門道、掌握竅門
 
 ### 文法／用法
-- `I’m still quite new to this role.`
-- `It may take me about a year to really learn the ropes.`
-- `He knows the ropes now.`
+- `I’m still quite new to this role.`：我對這個角色還很新。
+- `It may take me about a year to really learn the ropes.`：我可能需要大約一年才會真正熟悉門道。
+- `He knows the ropes now.`：他現在已經熟悉流程了。
 
 ### 學生表達待加強
 - 容易只說自己是 beginner，沒有再補充工作熟悉度與學習過程。
 
 ### 更自然的說法
-- `I’m still new to this role, so I’m learning the ropes.`
-- `I think I’ll need some time to really know the ropes.`
+- `I’m still new to this role, so I’m learning the ropes.`：我對這個角色還很新，所以正在熟悉門道。
+- `I think I’ll need some time to really know the ropes.`：我覺得需要一些時間才能真正熟悉流程。
 
 ## Topic 5：AI 工具如何協助備課與工作
 
@@ -148,16 +148,16 @@ tags: []
 - `precise`：精準的
 
 ### 文法／用法
-- `I use AI tools to prepare the syllabus and training materials.`
-- `They help me organize the course content more efficiently.`
-- `If I ask better questions, I get better answers.`
+- `I use AI tools to prepare the syllabus and training materials.`：我使用 AI 工具準備課程大綱與訓練教材。
+- `They help me organize the course content more efficiently.`：它們幫助我更有效率地整理課程內容。
+- `If I ask better questions, I get better answers.`：如果我問得更好，就會得到更好的答案。
 
 ### 學生表達待加強
 - 描述 AI 用途時容易停在工具名稱，沒有補充具體怎麼幫忙。
 
 ### 更自然的說法
-- `I use AI to prepare course content and polish the training materials.`
-- `AI helps me save time when I’m organizing the syllabus.`
+- `I use AI to prepare course content and polish the training materials.`：我用 AI 準備課程內容並潤飾訓練教材。
+- `AI helps me save time when I’m organizing the syllabus.`：整理課程大綱時，AI 幫我節省時間。
 
 ## Topic 6：podcast、英聽訓練與不要先翻成中文
 
@@ -177,16 +177,16 @@ tags: []
 - `upcoming`：即將到來的
 
 ### 文法／用法
-- `I listen to podcasts to improve my listening comprehension.`
-- `I’m trying not to translate everything into Chinese in my head.`
-- `This podcast gives practical advice for English learners.`
+- `I listen to podcasts to improve my listening comprehension.`：我聽 podcast 來提升聽力理解。
+- `I’m trying not to translate everything into Chinese in my head.`：我正在練習不要在腦中把所有內容先翻成中文。
+- `This podcast gives practical advice for English learners.`：這個 podcast 提供英文學習者實用建議。
 
 ### 學生表達待加強
 - 容易只說有在聽 podcast，但沒有說明內容、用途、收穫。
 
 ### 更自然的說法
-- `I listen to English-learning podcasts to improve my listening.`
-- `I’m trying to think more directly in English.`
+- `I listen to English-learning podcasts to improve my listening.`：我聽英文學習 podcast 來提升聽力。
+- `I’m trying to think more directly in English.`：我正在練習更直接用英文思考。
 
 ## Topic 7：nostalgia、遊戲、零食與 cater to
 
@@ -206,16 +206,16 @@ tags: []
 - `ice cream bar`：雪糕、冰淇淋條
 
 ### 文法／用法
-- `That game makes me feel nostalgic.`
-- `Many companies cater to people’s nostalgia by remaking old products.`
-- `This snack reminds me of my childhood.`
+- `That game makes me feel nostalgic.`：那個遊戲讓我覺得懷舊。
+- `Many companies cater to people’s nostalgia by remaking old products.`：很多公司透過重製舊產品來迎合人們的懷舊感。
+- `This snack reminds me of my childhood.`：這個零食讓我想起童年。
 
 ### 學生表達待加強
 - 用 `nostalgia`、`nostalgic` 時容易混用詞性。
 
 ### 更自然的說法
-- `I feel nostalgic when I see old game consoles.`
-- `Some companies make money by catering to nostalgia.`
+- `I feel nostalgic when I see old game consoles.`：看到舊遊戲主機時，我會覺得懷舊。
+- `Some companies make money by catering to nostalgia.`：有些公司透過迎合懷舊感來賺錢。
 
 ## Topic 8：Future Homes、IoT 與課堂講義主題
 
@@ -238,13 +238,13 @@ tags: []
 - `building block`：積木；基礎模組
 
 ### 文法／用法
-- `In the future, many household appliances may be connected to the internet.`
-- `A smart home can improve convenience and energy efficiency.`
-- `The shutters close automatically when it gets dark.`
+- `In the future, many household appliances may be connected to the internet.`：未來許多家用電器可能會連上網路。
+- `A smart home can improve convenience and energy efficiency.`：智慧住宅可以提升便利性與能源效率。
+- `The shutters close automatically when it gets dark.`：天黑時百葉窗會自動關上。
 
 ### 更自然的說法
-- `A smart home could save energy and make daily life more convenient.`
-- `With IoT devices, you can control household appliances remotely.`
+- `A smart home could save energy and make daily life more convenient.`：智慧住宅可以節省能源，並讓日常生活更方便。
+- `With IoT devices, you can control household appliances remotely.`：有了 IoT 裝置，就可以遠端控制家用電器。
 
 ## Topic 9：innovation 字彙：experiment、augment、enhance、complement、evolve
 
@@ -268,18 +268,18 @@ tags: []
 - `explore`：探索
 
 ### 文法／用法
-- `AR augments reality with digital information.`
-- `This update enhances the user experience.`
-- `The new feature complements the original design.`
-- `Technology continues to evolve over time.`
+- `AR augments reality with digital information.`：AR 用數位資訊擴增現實。
+- `This update enhances the user experience.`：這次更新提升了使用者體驗。
+- `The new feature complements the original design.`：這個新功能補足了原本的設計。
+- `Technology continues to evolve over time.`：科技會隨時間持續演變。
 
 ### 學生表達待加強
 - `augment`、`enhance`、`complement` 三個字容易意思太接近而混用。
 
 ### 更自然的說法
-- `AR adds digital information to the real world.`
-- `This feature enhances the quality of the product.`
-- `The two tools complement each other well.`
+- `AR adds digital information to the real world.`：AR 把數位資訊加到真實世界中。
+- `This feature enhances the quality of the product.`：這個功能提升了產品品質。
+- `The two tools complement each other well.`：這兩個工具彼此互補得很好。
 
 ## Topic 10：dwelling、roommate、housemate、flatmate
 
@@ -299,13 +299,13 @@ tags: []
 - `flatmate`：公寓室友
 
 ### 文法／用法
-- `My brother was my flatmate when I was at university.`
-- `We live in the same house, so he’s my housemate, not my roommate.`
-- `This forest is the natural dwelling of many animals.`
+- `My brother was my flatmate when I was at university.`：我上大學時，哥哥是我的公寓室友。
+- `We live in the same house, so he’s my housemate, not my roommate.`：我們住在同一間房子，所以他是 housemate，不是 roommate。
+- `This forest is the natural dwelling of many animals.`：這座森林是許多動物的自然棲息地。
 
 ### 更自然的說法
-- `I used to share a flat with my brother, so he was my flatmate.`
-- `We share the same house, but we have different rooms.`
+- `I used to share a flat with my brother, so he was my flatmate.`：我以前和哥哥共住一間公寓，所以他是我的 flatmate。
+- `We share the same house, but we have different rooms.`：我們住同一間房子，但有不同房間。
 
 ## Topic 11：future home 的 pros and cons 與下次討論方向
 
@@ -325,13 +325,13 @@ tags: []
 - `labour day`：勞動節
 
 ### 文法／用法
-- `A smart home is convenient, but it may also raise privacy and security concerns.`
-- `My ideal house would be eco-friendly and easy to maintain.`
-- `Technology can help fulfill our needs, but it also creates new risks.`
+- `A smart home is convenient, but it may also raise privacy and security concerns.`：智慧住宅很方便，但也可能引發隱私與安全疑慮。
+- `My ideal house would be eco-friendly and easy to maintain.`：我理想中的房子會是環保且容易維護的。
+- `Technology can help fulfill our needs, but it also creates new risks.`：科技可以幫助滿足需求，但也會創造新的風險。
 
 ### 更自然的說法
-- `One advantage of a smart home is convenience, but a major disadvantage is cybersecurity risk.`
-- `My ideal home would use solar power and smart devices in an eco-friendly way.`
+- `One advantage of a smart home is convenience, but a major disadvantage is cybersecurity risk.`：智慧住宅的一個優點是便利，但主要缺點是資安風險。
+- `My ideal home would use solar power and smart devices in an eco-friendly way.`：我理想中的家會以環保方式使用太陽能與智慧裝置。
 
 ## 單字與片語總表
 
@@ -400,27 +400,24 @@ tags: []
 
 ## 片語典故與文化補充
 
-- `learn the ropes`
+- `learn the ropes`：熟悉門道；掌握實際運作方式
   這個片語一般認為來自早期帆船文化。船上有很多繩索用來控制帆與裝置，新手水手必須先學會每條繩子的用途，才能真正上手；因此後來就引申成「熟悉門道、掌握實際運作方式」。
 
-- `know the ropes`
+- `know the ropes`：熟悉流程；已經知道怎麼做
   這是 `learn the ropes` 的延伸說法，表示已經不是新手，而是真的熟悉流程、規則與操作方法。
 
-- `home is where the heart is`
+- `home is where the heart is`：家是心有所屬的地方
   這是一句很常見的英文諺語，意思是「家不只是地點，而是心真正有歸屬感的地方」。本堂講義把它改寫成 `home is where the IoT is`，是一種雙關用法，讓傳統說法帶進現代科技主題。
 
-- `cater to`
+- `cater to`：迎合；滿足需求或偏好
   `cater` 原本和供餐、飲食服務有關，後來延伸成「供應某人需要的東西」，因此 `cater to someone’s needs / preferences / nostalgia` 就變成「迎合某人的需求／偏好／懷舊感」。
 
-- `pros and cons`
+- `pros and cons`：優點與缺點；正反兩面
   這組說法源自拉丁文 `pro et contra`，意思是「支持與反對」。進入英文後，就固定表示某件事的正反兩面，也就是優點與缺點。
 
 ## 下週注意事項
 
-- 先熟讀 `people / peoples`、`time / times`，各自造 3 句例句。
-- 用英文各寫 5 句，練習 `training`、`instructor`、`syllabus`、`learn the ropes`。
-- 準備一段 1 分鐘口說：`How AI helps me prepare training materials`
-- 準備一段 1 分鐘口說：`The pros and cons of a smart home`
-- 複習科技字：`IoT`、`augment`、`enhance`、`complement`、`evolve`、`efficiency`
-- 先想好理想住宅：要有哪些智慧功能、是否 `eco-friendly`、最大的好處與風險是什麼。
-- 如果下次改線上課，先準備一版可以直接口說的答案，避免臨場只剩關鍵字。
+- 下次會延續 `future home` 與智慧住宅主題。
+- 老師留下的討論方向包含 smart home 的 `pros and cons`，以及理想中的 future home。
+- 可延伸討論智慧住宅的便利性、效率、安全、環保、資安風險、成本與故障依賴。
+- 如果下次改線上課，課堂仍會接續這些討論方向。

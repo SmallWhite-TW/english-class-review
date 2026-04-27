@@ -20,18 +20,18 @@ tags: []
 - 地名表達要固定順序，不要每次換講法
 
 ### 文法／用法
-- `Hi everyone, I'm Dave.`
-- `I'm from Taiwan.`
-- `I live in Sanchong, New Taipei City.`
+- `Hi everyone, I'm Dave.`：大家好，我是 Dave。
+- `I'm from Taiwan.`：我來自台灣。
+- `I live in Sanchong, New Taipei City.`：我住在新北市三重。
 
 ### 更自然的說法
-- `Hi everyone, I'm Dave from Taiwan.`
-- `I live in Sanchong, New Taipei City.`
-- `Nice to meet you all.`
+- `Hi everyone, I'm Dave from Taiwan.`：大家好，我是來自台灣的 Dave。
+- `I live in Sanchong, New Taipei City.`：我住在新北市三重。
+- `Nice to meet you all.`：很高興認識大家。
 
 ### 補充例句
-- `I'm based in New Taipei City.`
-- `I'm from Taiwan, and I currently live in Sanchong.`
+- `I'm based in New Taipei City.`：我目前以新北市為生活／工作據點。
+- `I'm from Taiwan, and I currently live in Sanchong.`：我來自台灣，目前住在三重。
 
 ## Topic 2：工作內容與職場表達
 ### Topic 摘要
@@ -43,25 +43,25 @@ tags: []
 - `work closely with` 很適合講跨部門合作
 
 ### 文法／用法
-- `I work as a Product Manager.`
-- `I work closely with engineers and other team members.`
-- `I organize requirements and move projects forward.`
+- `I work as a Product Manager.`：我擔任產品經理。
+- `I work closely with engineers and other team members.`：我和工程師及其他團隊成員密切合作。
+- `I organize requirements and move projects forward.`：我整理需求並推動專案前進。
 
 ### 關鍵單字／片語
-- `Product Manager`
-- `work closely with`
-- `organize requirements`
-- `move projects forward`
-- `workflow`
+- `Product Manager`：產品經理；負責產品規劃、需求整理與協作推進的人
+- `work closely with`：與……密切合作；常用於跨部門協作
+- `organize requirements`：整理需求；把需求轉成清楚可執行的內容
+- `move projects forward`：推動專案前進；讓事情持續有進展
+- `workflow`：工作流程；完成任務的一套步驟
 
 ### 更自然的說法
-- `I work as a Product Manager, and I collaborate closely with engineers.`
-- `Part of my job is organizing requirements and helping projects move forward.`
-- `I'm interested in finding ways to improve my workflow.`
+- `I work as a Product Manager, and I collaborate closely with engineers.`：我擔任產品經理，並且和工程師密切協作。
+- `Part of my job is organizing requirements and helping projects move forward.`：我的部分工作是整理需求，並協助專案往前推進。
+- `I'm interested in finding ways to improve my workflow.`：我對尋找改善工作流程的方法很感興趣。
 
 ### 補充例句
-- `I often work with engineers to clarify product requirements.`
-- `I'm always looking for ways to improve how I work.`
+- `I often work with engineers to clarify product requirements.`：我常和工程師一起釐清產品需求。
+- `I'm always looking for ways to improve how I work.`：我一直在尋找改善工作方式的方法。
 
 ## Topic 3：興趣、學習動機與日常英文學習方式
 ### Topic 摘要
@@ -73,29 +73,29 @@ tags: []
 - 平常怎麼學英文，是很適合延伸對話的素材
 
 ### 文法／用法
-- `In my free time, I enjoy learning new things, reading, and traveling.`
-- `I joined this class because I want to improve my English fluency.`
-- `I want to gain more confidence through practice.`
-- `I usually learn by reading articles and listening to podcasts.`
+- `In my free time, I enjoy learning new things, reading, and traveling.`：空閒時間，我喜歡學新東西、閱讀和旅行。
+- `I joined this class because I want to improve my English fluency.`：我參加這堂課，是因為想提升英文流暢度。
+- `I want to gain more confidence through practice.`：我想透過練習建立更多自信。
+- `I usually learn by reading articles and listening to podcasts.`：我平常透過閱讀文章和聽 podcast 來學習。
 
 ### 關鍵單字／片語
-- `fluency`
-- `confidence`
-- `through practice`
-- `podcast`
+- `fluency`：流暢度；說話自然順暢的能力
+- `confidence`：自信；開口表達時的穩定感
+- `through practice`：透過練習；表示方法或途徑
+- `podcast`：Podcast 節目；可用於聽力練習
 
 ### 更自然的說法
-- `I joined this class to improve my English fluency and build more confidence.`
-- `I usually practice English by reading articles and listening to podcasts.`
-- `One podcast I like is "Eat Your Crust."`
+- `I joined this class to improve my English fluency and build more confidence.`：我參加這堂課，是為了提升英文流暢度並建立更多自信。
+- `I usually practice English by reading articles and listening to podcasts.`：我平常透過閱讀文章和聽 podcast 練習英文。
+- `One podcast I like is "Eat Your Crust."`：我喜歡的一個 podcast 是《Eat Your Crust》。
 
 ### 補充例句
-- `I enjoy traveling and learning new things in my free time.`
-- `I want to become more confident when I speak English.`
+- `I enjoy traveling and learning new things in my free time.`：空閒時間，我喜歡旅行和學新東西。
+- `I want to become more confident when I speak English.`：我想在說英文時變得更有自信。
 
 ## Topic 4：運動與休閒單字
 ### Topic 摘要
-這組單字偏暖身聊天與日常興趣表達，適合拿來延伸「你平常喜歡做什麼」的對話。
+這組單字偏暖身聊天與日常興趣表達，適合拿來延伸「學生平常喜歡做什麼」的對話。
 
 ### 老師補充重點
 - `judoka` 適合用來介紹柔道練習者
@@ -103,21 +103,21 @@ tags: []
 - 問興趣時，口語上常用 `What do you do for fun?`
 
 ### 關鍵單字／片語
-- `Judoka`
-- `Field`
-- `Hobby`
-- `Competitive`
-- `Competitive edge`
+- `Judoka`：柔道練習者；練柔道的人
+- `Field`：運動場；領域，依語境不同使用
+- `Hobby`：嗜好；休閒興趣
+- `Competitive`：有競爭力的；好勝的
+- `Competitive edge`：競爭優勢；讓人或產品勝出的特點
 
 ### 文法／用法
-- `I'm a judoka.`
-- `I train in judo.`
-- `What do you do for fun?`
-- `She is very competitive.`
+- `I'm a judoka.`：我是柔道練習者。
+- `I train in judo.`：我練習柔道。
+- `What do you do for fun?`：平常做什麼休閒活動？
+- `She is very competitive.`：她很有競爭心／很有企圖心。
 
 ### 補充例句
-- `Basketball is played on a court, not a field.`
-- `Learning languages is one of my hobbies.`
+- `Basketball is played on a court, not a field.`：籃球是在 court 上打，不是在 field 上。
+- `Learning languages is one of my hobbies.`：學語言是我的嗜好之一。
 
 ## Topic 5：生活、交通與規則單字
 ### Topic 摘要
@@ -130,17 +130,17 @@ tags: []
 - `pull over` 是很常見的交通片語
 
 ### 關鍵單字／片語
-- `Red-eye`
-- `Deposit`
-- `Put down a deposit`
-- `Lenient`
-- `Pull over`
+- `Red-eye`：紅眼航班；深夜起飛、清晨抵達的航班
+- `Deposit`：押金；存款；也可當動詞表示存入
+- `Put down a deposit`：付押金；先支付保留款
+- `Lenient`：寬容的；規則或處罰不嚴格
+- `Pull over`：靠邊停車；常見交通片語
 
 ### 文法／用法
-- `I took a red-eye flight.`
-- `We need to put down a deposit first.`
-- `The teacher is quite lenient.`
-- `The police officer told him to pull over.`
+- `I took a red-eye flight.`：我搭了一班紅眼航班。
+- `We need to put down a deposit first.`：我們需要先付押金。
+- `The teacher is quite lenient.`：老師相當寬容。
+- `The police officer told him to pull over.`：警察叫他靠邊停車。
 
 ## Topic 6：社會、文化與公共議題單字
 ### Topic 摘要
@@ -151,19 +151,19 @@ tags: []
 - `status quo` 適合放在比較抽象的社會議題討論
 
 ### 關鍵單字／片語
-- `Discrimination`
-- `Face discrimination`
-- `Experience discrimination`
-- `Status quo`
-- `Challenge the status quo`
+- `Discrimination`：歧視；不公平對待
+- `Face discrimination`：面對歧視；遭遇不公平對待
+- `Experience discrimination`：經歷歧視；親身遇到不公平對待
+- `Status quo`：現狀；既有局面
+- `Challenge the status quo`：挑戰現狀；改變既有做法
 
 ### 文法／用法
-- `Some people still face discrimination.`
-- `The movement wants to challenge the status quo.`
+- `Some people still face discrimination.`：有些人仍然面臨歧視。
+- `The movement wants to challenge the status quo.`：這個運動想挑戰現狀。
 
 ### 補充例句
-- `We should talk more openly about discrimination in society.`
-- `Some companies are trying to change the status quo.`
+- `We should talk more openly about discrimination in society.`：我們應該更公開地討論社會中的歧視。
+- `Some companies are trying to change the status quo.`：有些公司正在嘗試改變現狀。
 
 ## Topic 7：電影與書籍類型單字
 ### Topic 摘要
@@ -175,29 +175,29 @@ tags: []
 - `Biography` 和 `Memoir` 的差別在於一生 vs 特定階段
 
 ### 關鍵單字／片語
-- `Action`
-- `Sci-Fi`
-- `Rom-com`
-- `Horror`
-- `Thriller`
-- `Animation`
-- `Documentary`
-- `Mystery`
-- `Fantasy`
-- `Biography`
-- `Memoir`
-- `Non-fiction`
-- `Plot twist`
+- `Action`：動作片；動作類型
+- `Sci-Fi`：科幻；science fiction 的口語縮寫
+- `Rom-com`：浪漫喜劇；romantic comedy 的口語縮寫
+- `Horror`：恐怖類型；重點是讓人害怕
+- `Thriller`：驚悚類型；重點是緊張與懸念
+- `Animation`：動畫；動畫作品
+- `Documentary`：紀錄片；非虛構影像作品
+- `Mystery`：推理／懸疑；圍繞未知事件展開
+- `Fantasy`：奇幻；含魔法或架空世界元素
+- `Biography`：傳記；通常描述一個人的一生
+- `Memoir`：回憶錄；通常聚焦人生某段經驗
+- `Non-fiction`：非虛構；基於真實內容的作品
+- `Plot twist`：劇情反轉；故事意外轉折
 
 ### 文法／用法
-- `I like sci-fi and documentaries.`
-- `This movie is more of a thriller than a horror film.`
-- `I enjoy reading non-fiction books.`
+- `I like sci-fi and documentaries.`：我喜歡科幻片和紀錄片。
+- `This movie is more of a thriller than a horror film.`：這部電影比較像驚悚片，而不是恐怖片。
+- `I enjoy reading non-fiction books.`：我喜歡讀非虛構類書籍。
 
 ### 補充例句
-- `A good mystery story needs a strong plot twist.`
-- `Fantasy is one of my favorite genres.`
-- `I usually prefer documentaries to action movies.`
+- `A good mystery story needs a strong plot twist.`：好的推理故事需要有力的劇情反轉。
+- `Fantasy is one of my favorite genres.`：奇幻是我最喜歡的類型之一。
+- `I usually prefer documentaries to action movies.`：比起動作片，我通常更喜歡紀錄片。
 
 ## Topic 8：其他實用單字與語感差異
 ### Topic 摘要
@@ -210,22 +210,22 @@ tags: []
 - `silicon shield` 帶有台灣時事與產業背景
 
 ### 關鍵單字／片語
-- `Mild`
-- `Cooperate`
-- `Collaborate`
-- `Current affairs`
-- `Keep up with current affairs`
-- `Silicon shield`
+- `Mild`：溫和的；點餐時可表示不辣或味道淡一點
+- `Cooperate`：合作；偏配合完成共同目標
+- `Collaborate`：協作；偏共同創作或深度合作
+- `Current affairs`：時事；當前社會與國際議題
+- `Keep up with current affairs`：關注時事；跟上最新議題
+- `Silicon shield`：矽盾；台灣半導體產業形成的戰略保護概念
 
 ### 文法／用法
-- `I'd like it mild, please.`
-- `We need to cooperate with other teams.`
-- `We collaborated on this project.`
-- `I try to keep up with current affairs.`
+- `I'd like it mild, please.`：我想要溫和一點／不要太辣，謝謝。
+- `We need to cooperate with other teams.`：我們需要和其他團隊合作。
+- `We collaborated on this project.`：我們在這個專案上共同協作。
+- `I try to keep up with current affairs.`：我會試著關注時事。
 
 ### 補充例句
-- `This curry is too spicy for me. I'd prefer it mild.`
-- `Designers and engineers need to collaborate closely.`
+- `This curry is too spicy for me. I'd prefer it mild.`：這個咖哩對我來說太辣了，我比較想要溫和一點的。
+- `Designers and engineers need to collaborate closely.`：設計師和工程師需要密切協作。
 
 ## Topic 9：可直接練習的自我介紹句型
 ### Topic 摘要
@@ -237,14 +237,14 @@ tags: []
 - 可把工作、興趣、學習英文原因各準備一句
 
 ### 更自然的說法
-- `Hi, I'm Dave from Taiwan, and I live in New Taipei City.`
-- `I work as a Product Manager and often collaborate with engineers.`
-- `In my free time, I enjoy reading, traveling, and learning new things.`
-- `I'm taking this class because I want to improve my fluency and become more confident in English.`
+- `Hi, I'm Dave from Taiwan, and I live in New Taipei City.`：嗨，我是來自台灣的 Dave，住在新北市。
+- `I work as a Product Manager and often collaborate with engineers.`：我擔任產品經理，常和工程師協作。
+- `In my free time, I enjoy reading, traveling, and learning new things.`：空閒時間，我喜歡閱讀、旅行和學新東西。
+- `I'm taking this class because I want to improve my fluency and become more confident in English.`：我上這堂課，是因為想提升流暢度，並對英文更有自信。
 
 ### 補充例句
-- `I usually practice English by reading articles and listening to podcasts.`
-- `Recently, I've been interested in AI tools and productivity.`
+- `I usually practice English by reading articles and listening to podcasts.`：我平常透過閱讀文章和聽 podcast 練習英文。
+- `Recently, I've been interested in AI tools and productivity.`：最近我對 AI 工具和生產力很感興趣。
 
 ## 單字與片語總表
 - `Product Manager`：產品經理

@@ -12,7 +12,7 @@ published: true
 **Date:** 2026-04-21  
 **Topic:** New Products and Services, Smart Homes & Opinion Practice  
 **Format:** English-Chinese Parallel Notes  
-**Based on:** Lesson 005 review + _New Products and Services.pdf_
+**Based on:** Lesson 005 review + [_New Products and Services.pdf_](../materials/new-products-and-services.pdf)
 
 ---
 
