@@ -158,9 +158,33 @@ async function run(): Promise<void> {
   for (const lessonId of lessons) {
     const lessonDir = join(SOURCE_ROOT, lessonId);
 
+    // Files placed loose in the lesson dir (not under records/ or pre-study/)
+    // are also accepted as a fallback. This is a defence against the common
+    // mistake of dropping `260501-lesson-007-review.md` straight into
+    // `lesson-007/`. We classify them by filename pattern.
+    const looseFiles = await listMarkdownFiles(lessonDir);
+
     for (const collection of ['pre-study', 'review'] as const) {
       const subdir = collection === 'review' ? 'records' : 'pre-study';
-      const files = await listMarkdownFiles(join(lessonDir, subdir));
+      const subdirFiles = await listMarkdownFiles(join(lessonDir, subdir));
+
+      const pattern =
+        collection === 'review'
+          ? /(review|record)/i
+          : /(pre[-_]?study|prestudy)/i;
+      const looseMatches = looseFiles.filter((f) => {
+        const name = f.split('/').pop() ?? '';
+        return pattern.test(name);
+      });
+      if (looseMatches.length > 0) {
+        for (const f of looseMatches) {
+          console.log(
+            `  ⚠ found ${collection} file at lesson root (should be in ${subdir}/): ${relative(SOURCE_ROOT, f)}`,
+          );
+        }
+      }
+
+      const files = [...subdirFiles, ...looseMatches];
       for (const file of files) {
         const result = await migrateFile(file, lessonId, collection);
         migrated.push(result);

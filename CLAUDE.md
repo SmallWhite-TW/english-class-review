@@ -30,11 +30,21 @@ Static site on GitHub Pages (Astro) showing weekly English class content for two
 ## Useful commands
 
 ```bash
-npm run dev               # Astro dev server
-npm run build             # static build to dist/
-npm run typecheck         # astro check + tsc
-npm run worker:dev        # local wrangler dev
-npm run migrate:lessons   # one-shot content import from local english-courses
-npm run extract:vocabulary
-npm run validate:content
+npm run dev                   # Astro dev server
+npm run build                 # static build to dist/
+npm run typecheck             # astro check + tsc
+npm run worker:dev            # local wrangler dev
+npm run new-lesson <N>        # scaffold english-courses/lesson-NNN/{pre-study,records}/
+npm run migrate:lessons       # sync content from english-courses/ into src/content/
+npm run extract:items         # regenerate src/content/generated/items.json
+npm run validate:content      # frontmatter / vocab format check (CI gate)
 ```
+
+## Adding a new lesson (weekly workflow)
+
+1. `npm run new-lesson 8` — scaffolds `english-courses/lesson-008/` with `pre-study/` and `records/` subdirs.
+2. Drop the review markdown into `lesson-008/records/` (filename pattern `YYMMDD-lesson-008-review.md`).
+3. `npm run migrate:lessons` — copies into `src/content/review/` and rewrites the frontmatter.
+4. `git add -A && git commit -m "chore: add lesson-008 review" && git push`.
+
+`migrate-lessons.ts` also has a fallback: review markdown placed loose under `lesson-NNN/` (not under `records/`) is still picked up if the filename matches `*review*` or `*record*` — it logs a warning so you know to tidy up later.

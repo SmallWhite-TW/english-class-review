@@ -15,6 +15,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "typecheck": "astro check && tsc --noEmit",
+    "new-lesson": "scripts/new-lesson.sh",
     "migrate:lessons": "tsx scripts/migrate-lessons.ts",
     "extract:items": "tsx scripts/extract-items.ts",
     "validate:content": "tsx scripts/validate-content.ts",
