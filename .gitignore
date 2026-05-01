@@ -28,6 +28,12 @@ src/content/generated/items.json
 src/content/generated/vocabulary.json
 src/content/generated/search-documents.json
 
+# Hand-curated AI fallback examples are committed (not generated each build)
+!src/content/generated/synthetic-examples.json
+
+# Working scratch files from missing-examples scripts
+scripts/.*.tsv
+
 # IDE / editor
 .vscode/*
 !.vscode/extensions.json

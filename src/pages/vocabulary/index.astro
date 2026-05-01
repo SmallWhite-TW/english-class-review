@@ -3,8 +3,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SpeakButton from '../../components/speech/SpeakButton.astro';
 import type { ReviewItem } from '../../types/content.js';
 import itemsData from '../../content/generated/items.json';
+import syntheticData from '../../content/generated/synthetic-examples.json';
 
 const items = itemsData as ReviewItem[];
+const synthetic = syntheticData as Record<
+  string,
+  { term: string; examples: { en: string; zh: string }[] }
+>;
 const baseUrl = import.meta.env.BASE_URL;
 const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 
@@ -35,6 +40,8 @@ const clientItems = items.map((it) => ({
   topicTitle: it.topicTitle,
   section: it.section,
 }));
+
+const clientSynthetic = synthetic;
 ---
 
 <BaseLayout title="Item Index" description={`共 ${items.length} 項可複習內容`}>
@@ -166,6 +173,12 @@ const clientItems = items.map((it) => ({
     type="application/json"
     set:html={JSON.stringify(clientItems)}
   />
+  <script
+    is:inline
+    id="synthetic-examples-data"
+    type="application/json"
+    set:html={JSON.stringify(clientSynthetic)}
+  />
 </BaseLayout>
 
 <script>
@@ -180,6 +193,16 @@ const clientItems = items.map((it) => ({
   const dataEl = document.getElementById('items-data');
   const allItems: ClientItem[] = dataEl?.textContent ? JSON.parse(dataEl.textContent) : [];
 
+  // Hand-curated AI examples for items that have no review-derived match.
+  // Keyed by item.id. Marked separately in the UI so it's clear they aren't
+  // from class.
+  type SyntheticExample = { en: string; zh: string };
+  type SyntheticEntry = { term: string; examples: SyntheticExample[] };
+  const synthEl = document.getElementById('synthetic-examples-data');
+  const syntheticByItem: Record<string, SyntheticEntry> = synthEl?.textContent
+    ? JSON.parse(synthEl.textContent)
+    : {};
+
   // Group sentence + natural by `${lessonId}::${topicIndex ?? 'no-topic'}`
   // so each vocab/phrase card can pull "examples" of how it might appear.
   const examplesByTopic = new Map<string, ClientItem[]>();
@@ -190,14 +213,74 @@ const clientItems = items.map((it) => ({
     list.push(it);
     examplesByTopic.set(key, list);
   }
-  function lookupExamples(item: ClientItem): ClientItem[] {
+
+  // Build a matcher per term:
+  //   - multi-word phrases (contain whitespace): substring (case-insensitive),
+  //     since "\b" inside a phrase doesn't help and may break on punctuation.
+  //   - single words: word-boundary so "in" doesn't match "kingdom" /
+  //     "interesting" / "single".
+  // Returns null if the term contains no usable letters.
+  function buildTermMatcher(term: string): RegExp | null {
+    const cleaned = term.trim();
+    if (cleaned.length === 0) return null;
+    const escaped = cleaned.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (/\s/.test(cleaned)) {
+      return new RegExp(escaped, 'i');
+    }
+    // Use \b only when the term starts and ends with a word char.
+    const startsWithWord = /^\w/.test(cleaned);
+    const endsWithWord = /\w$/.test(cleaned);
+    const left = startsWithWord ? '\\b' : '';
+    const right = endsWithWord ? '\\b' : '';
+    return new RegExp(`${left}${escaped}${right}`, 'i');
+  }
+
+  // What an example looks like to the renderer. Either it's a real ReviewItem
+  // pulled from class, or a synthetic AI-generated pair.
+  type ExampleSource = 'class' | 'synthetic';
+  interface RenderExample {
+    source: ExampleSource;
+    type: 'sentence' | 'natural' | 'synthetic';
+    english: string;
+    meaningZh: string;
+  }
+
+  function lookupExamples(item: ClientItem): RenderExample[] {
     const key = `${item.lessonId}::${item.topicIndex ?? 'no-topic'}`;
     const all = examplesByTopic.get(key) ?? [];
-    // Prefer examples that actually contain the term (case-insensitive match).
-    const lower = item.english.toLowerCase();
-    const containing = all.filter((e) => e.english.toLowerCase().includes(lower));
-    if (containing.length > 0) return containing.slice(0, 8);
-    return all.slice(0, 8);
+    const matcher = buildTermMatcher(item.english);
+
+    // 1) Class-derived: must literally contain the term (word-boundary or
+    //    substring depending on whether the term has whitespace).
+    const classMatches: RenderExample[] =
+      matcher === null
+        ? []
+        : all
+            .filter((e) => matcher.test(e.english))
+            .map((e) => ({
+              source: 'class' as const,
+              type: e.type as 'sentence' | 'natural',
+              english: e.english,
+              meaningZh: e.meaningZh ?? '',
+            }))
+            .slice(0, 6);
+
+    if (classMatches.length > 0) return classMatches;
+
+    // 2) Synthetic fallback: hand-curated AI examples for terms the class
+    //    review never illustrated. Returned only when class examples didn't
+    //    produce any match — the source tag in the UI keeps origins clear.
+    const synth = syntheticByItem[item.id];
+    if (synth && synth.examples.length > 0) {
+      return synth.examples.map((e) => ({
+        source: 'synthetic' as const,
+        type: 'synthetic' as const,
+        english: e.en,
+        meaningZh: e.zh,
+      }));
+    }
+
+    return [];
   }
 
   const TYPE_LABEL: Record<ClientItem['type'], string> = {
@@ -205,6 +288,12 @@ const clientItems = items.map((it) => ({
     phrase: 'PHRASE',
     sentence: 'SENTENCE',
     natural: 'NATURAL',
+  };
+
+  const EXAMPLE_TAG: Record<RenderExample['type'], string> = {
+    sentence: 'SENTENCE',
+    natural: 'NATURAL',
+    synthetic: 'AI 補充',
   };
 
   const search = document.getElementById('vocab-search') as HTMLInputElement | null;
@@ -269,6 +358,38 @@ const clientItems = items.map((it) => ({
     });
   }
 
+  function highlightTermInto(text: HTMLElement, item: ClientItem, sentence: string): void {
+    const matcher = buildTermMatcher(item.english);
+    if (!matcher) {
+      text.textContent = sentence;
+      return;
+    }
+    // RegExp.exec is stateful with /g; we rebuild a global one for highlight.
+    const global = new RegExp(matcher.source, matcher.flags.includes('g') ? matcher.flags : matcher.flags + 'g');
+    let lastIndex = 0;
+    let m: RegExpExecArray | null;
+    let matched = false;
+    while ((m = global.exec(sentence)) !== null) {
+      matched = true;
+      if (m.index > lastIndex) {
+        text.append(document.createTextNode(sentence.slice(lastIndex, m.index)));
+      }
+      const mark = document.createElement('mark');
+      mark.textContent = m[0];
+      text.append(mark);
+      lastIndex = m.index + m[0].length;
+      // Avoid infinite loop on zero-length matches
+      if (m[0].length === 0) global.lastIndex++;
+    }
+    if (matched) {
+      if (lastIndex < sentence.length) {
+        text.append(document.createTextNode(sentence.slice(lastIndex)));
+      }
+    } else {
+      text.textContent = sentence;
+    }
+  }
+
   function renderExamplesFor(item: ClientItem): void {
     if (!examplesList || !examplesCount || !examplesEmpty || !examplesPanel) return;
     const examples = lookupExamples(item);
@@ -279,13 +400,14 @@ const clientItems = items.map((it) => ({
       return;
     }
     examplesEmpty.setAttribute('hidden', 'true');
-    examplesCount.textContent = `${examples.length} 例`;
+    const sourceLabel = examples[0]!.source === 'synthetic' ? 'AI 補充' : '課堂';
+    examplesCount.textContent = `${examples.length} 例 · ${sourceLabel}`;
 
     for (const ex of examples) {
       const li = document.createElement('li');
       li.className = `example-item example-item--${ex.type}`;
+      if (ex.source === 'synthetic') li.classList.add('example-item--synthetic');
 
-      // Header row: speak button + type tag (tag is its own block-level element)
       const head = document.createElement('div');
       head.className = 'example-head';
 
@@ -300,28 +422,13 @@ const clientItems = items.map((it) => ({
 
       const tag = document.createElement('span');
       tag.className = 'example-tag';
-      tag.textContent = TYPE_LABEL[ex.type];
+      tag.textContent = EXAMPLE_TAG[ex.type];
 
       head.append(speakBtn, tag);
 
-      // English sentence on its own line; highlight the current term within
       const text = document.createElement('p');
       text.className = 'example-text';
-      const termLower = item.english.toLowerCase();
-      const fullLower = ex.english.toLowerCase();
-      const start = fullLower.indexOf(termLower);
-      if (start >= 0) {
-        const before = ex.english.slice(0, start);
-        const match = ex.english.slice(start, start + item.english.length);
-        const after = ex.english.slice(start + item.english.length);
-        text.append(
-          document.createTextNode(before),
-          Object.assign(document.createElement('mark'), { textContent: match }),
-          document.createTextNode(after),
-        );
-      } else {
-        text.textContent = ex.english;
-      }
+      highlightTermInto(text, item, ex.english);
 
       li.append(head, text);
 
@@ -954,6 +1061,16 @@ const clientItems = items.map((it) => ({
   }
   .example-item--sentence .example-tag { color: var(--neon-magenta); }
   .example-item--natural .example-tag { color: var(--neon-purple); }
+  .example-item--synthetic .example-tag {
+    color: var(--neon-green);
+    border-style: dashed;
+  }
+  .example-item--synthetic {
+    /* subtle visual hint that this isn't from class */
+    border-left: 2px solid var(--neon-green);
+    margin-left: -2px;
+    padding-left: 0.65rem;
+  }
   .example-text {
     margin: 0;
     font-family: var(--font-mono);

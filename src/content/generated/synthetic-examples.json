@@ -1,0 +1,590 @@
+{
+  "lesson-006::lesson-006-review::phrase::8738682af1": {
+    "term": "develop / developer",
+    "examples": [
+      { "en": "She has worked as a software developer for five years.", "zh": "她當軟體開發者已經五年了。" },
+      { "en": "Our team is developing a new mobile game this year.", "zh": "我們團隊今年正在開發一款新手遊。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::08432b3e8d": {
+    "term": "first-person perspective",
+    "examples": [
+      { "en": "The game is played from a first-person perspective.", "zh": "這款遊戲是第一人稱視角。" },
+      { "en": "I prefer FPS games with a first-person perspective.", "zh": "我比較喜歡用第一人稱視角的射擊遊戲。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::8aae8e52f6": {
+    "term": "video game console",
+    "examples": [
+      { "en": "I bought a new video game console last weekend.", "zh": "我上週末買了一台新的遊戲主機。" },
+      { "en": "The Switch is a popular video game console for families.", "zh": "Switch 是很受家庭歡迎的遊戲主機。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::97282c3643": {
+    "term": "detect body movement",
+    "examples": [
+      { "en": "The sensor can detect body movement very accurately.", "zh": "感應器可以非常精準地偵測身體動作。" },
+      { "en": "These cameras are designed to detect body movement at night.", "zh": "這些攝影機是設計來在夜間偵測身體動作的。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::d94f0eabfb": {
+    "term": "motion control",
+    "examples": [
+      { "en": "The Switch supports motion control through its Joy-Con.", "zh": "Switch 透過 Joy-Con 支援體感控制。" },
+      { "en": "Motion control makes some sports games much more fun.", "zh": "體感控制讓一些運動類遊戲變得更好玩。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::792d3064f6": {
+    "term": "learning assistant",
+    "examples": [
+      { "en": "He built an AI learning assistant for English learners.", "zh": "他打造了一個給英文學習者用的 AI 學習助理。" },
+      { "en": "A good learning assistant should adjust to your level.", "zh": "好的學習助理應該要能配合你的程度。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::26c41fc26b": {
+    "term": "choose the level",
+    "examples": [
+      { "en": "You can choose the level before each practice session.", "zh": "每次練習前你可以選擇程度。" },
+      { "en": "I usually choose the level that's just a bit harder than mine.", "zh": "我通常會選擇比自己程度再難一點的等級。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::aa809e470e": {
+    "term": "podcast / YouTube materials",
+    "examples": [
+      { "en": "I learn English from podcasts and YouTube materials every day.", "zh": "我每天用 podcast 跟 YouTube 教學素材學英文。" },
+      { "en": "She mixes podcasts with YouTube materials to keep things fresh.", "zh": "她把 podcast 和 YouTube 教學素材交替使用，避免無聊。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::f05d43a195": {
+    "term": "beneficial",
+    "examples": [
+      { "en": "Daily exercise is beneficial to both body and mind.", "zh": "每天運動對身心都有益。" },
+      { "en": "Reading aloud is beneficial for pronunciation practice.", "zh": "朗讀對發音練習很有幫助。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::f7c8b4f8a4": {
+    "term": "destructive",
+    "examples": [
+      { "en": "Some inventions can be both useful and destructive.", "zh": "有些發明既實用又具破壞性。" },
+      { "en": "The storm caused destructive damage to the coastal area.", "zh": "這場風暴對沿海地區造成了破壞性的損害。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::8ea34c4ee3": {
+    "term": "advantage / disadvantage",
+    "examples": [
+      { "en": "Every technology has its advantages and disadvantages.", "zh": "每項科技都有它的優點與缺點。" },
+      { "en": "Working from home has more advantages than disadvantages for me.", "zh": "在家工作對我來說優點比缺點多。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::7b5f0fe077": {
+    "term": "bacteria / germ",
+    "examples": [
+      { "en": "Wash your hands often to avoid spreading bacteria.", "zh": "常洗手以避免散播細菌。" },
+      { "en": "Germs spread easily in crowded places.", "zh": "病菌在擁擠的地方很容易傳播。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::f8cc330352": {
+    "term": "analyze a report",
+    "examples": [
+      { "en": "I need an hour to analyze a report before the meeting.", "zh": "會議前我需要一小時來分析報告。" },
+      { "en": "AI tools can help us analyze a report much faster.", "zh": "AI 工具可以幫我們更快地分析報告。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::8071b0ff4f": {
+    "term": "compare new data with old data",
+    "examples": [
+      { "en": "We always compare new data with old data to spot trends.", "zh": "我們總是把新舊資料比較，以找出趨勢。" },
+      { "en": "The system will compare new data with old data automatically.", "zh": "這個系統會自動比較新舊資料。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::de9dbfe76c": {
+    "term": "focus on the latest data",
+    "examples": [
+      { "en": "Let's focus on the latest data from this month.", "zh": "我們來聚焦本月最新的資料。" },
+      { "en": "Sometimes you need to focus on the latest data, not historical numbers.", "zh": "有時候你要聚焦最新資料，而不是歷史數據。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::d6ad570575": {
+    "term": "get out of control",
+    "examples": [
+      { "en": "The party started to get out of control after midnight.", "zh": "派對在午夜後開始失控。" },
+      { "en": "We have to act before the situation gets out of control.", "zh": "我們得在情況失控前行動。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::c73465058d": {
+    "term": "traffic jam",
+    "examples": [
+      { "en": "There was a huge traffic jam on the highway this morning.", "zh": "今天早上高速公路大塞車。" },
+      { "en": "I always leave home early to avoid the traffic jam.", "zh": "我總是提早出門避開塞車。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::cfe17fe61b": {
+    "term": "overpopulation / depopulation",
+    "examples": [
+      { "en": "Overpopulation puts pressure on natural resources.", "zh": "人口過剩會對自然資源造成壓力。" },
+      { "en": "Some rural towns face serious depopulation.", "zh": "一些鄉下小鎮面臨嚴重的人口減少問題。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::42d686e6c2": {
+    "term": "population ageing",
+    "examples": [
+      { "en": "Population ageing is one of Taiwan's biggest challenges.", "zh": "人口老化是台灣最大的挑戰之一。" },
+      { "en": "Many countries are designing policies to deal with population ageing.", "zh": "許多國家在設計政策因應人口老化。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::ea30dc5fc9": {
+    "term": "implant",
+    "examples": [
+      { "en": "Doctors can implant a small chip to monitor heart activity.", "zh": "醫生可以植入一個小晶片來監測心臟活動。" },
+      { "en": "She received a cochlear implant last year.", "zh": "她去年植入了人工電子耳。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::2bc8616154": {
+    "term": "snake-like robot",
+    "examples": [
+      { "en": "The snake-like robot can squeeze through narrow pipes.", "zh": "這個蛇形機器人可以鑽過狹窄的管道。" },
+      { "en": "Engineers use a snake-like robot to inspect old buildings.", "zh": "工程師用蛇形機器人來檢查老舊建築。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::810ff18ca3": {
+    "term": "slender robotic arm",
+    "examples": [
+      { "en": "The slender robotic arm can reach into tight spaces.", "zh": "細長的機器手臂可以伸進狹小空間。" },
+      { "en": "Surgeons use a slender robotic arm for delicate operations.", "zh": "外科醫師用細長的機器手臂進行精細手術。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::630c287a5b": {
+    "term": "underwater",
+    "examples": [
+      { "en": "These cameras can record video underwater for hours.", "zh": "這些攝影機可以在水下錄影好幾個小時。" },
+      { "en": "The underwater world is full of strange creatures.", "zh": "水下的世界充滿奇怪的生物。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::cab17ffa8c": {
+    "term": "outer space",
+    "examples": [
+      { "en": "Astronauts spend months living in outer space.", "zh": "太空人在外太空生活好幾個月。" },
+      { "en": "Sending equipment to outer space is extremely expensive.", "zh": "把設備送到外太空非常昂貴。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::ca1da7d44d": {
+    "term": "cutting edge",
+    "examples": [
+      { "en": "Their lab is doing cutting edge research on AI safety.", "zh": "他們的實驗室在做尖端的 AI 安全研究。" },
+      { "en": "This phone uses cutting edge camera technology.", "zh": "這款手機使用尖端的相機技術。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::59e1c786a9": {
+    "term": "composite",
+    "examples": [
+      { "en": "The car body is made from carbon-fibre composite.", "zh": "車身是由碳纖維複合材料製成的。" },
+      { "en": "Composite materials are lighter and stronger than steel.", "zh": "複合材料比鋼鐵更輕也更堅固。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::80d2b131b8": {
+    "term": "chassis",
+    "examples": [
+      { "en": "A lighter chassis improves fuel efficiency.", "zh": "更輕的底盤可以提升油耗效率。" },
+      { "en": "The chassis of this car is built from carbon fibre.", "zh": "這款車的底盤是用碳纖維打造的。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::b2b0d0cf02": {
+    "term": "low emissions",
+    "examples": [
+      { "en": "Many car makers focus on low emissions to meet new rules.", "zh": "許多車廠專注低排放以符合新法規。" },
+      { "en": "Hybrid engines produce low emissions and save fuel.", "zh": "油電混合引擎排放低又省油。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::17eed171b8": {
+    "term": "icon",
+    "examples": [
+      { "en": "She is an icon of the music industry.", "zh": "她是音樂界的標誌性人物。" },
+      { "en": "The Statue of Liberty is an icon of New York.", "zh": "自由女神像是紐約的標誌。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::947372466f": {
+    "term": "headquarters",
+    "examples": [
+      { "en": "Their headquarters are located in central London.", "zh": "他們的總部位於倫敦市中心。" },
+      { "en": "The company is moving its headquarters next month.", "zh": "這家公司下個月要搬遷總部。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::65cc05cb79": {
+    "term": "technical innovation",
+    "examples": [
+      { "en": "Rolls-Royce is famous for its technical innovation.", "zh": "勞斯萊斯以技術創新聞名。" },
+      { "en": "Technical innovation often comes from solving real problems.", "zh": "技術創新通常來自解決真實問題。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::80a9ce854d": {
+    "term": "apprentice / apprenticeship",
+    "examples": [
+      { "en": "He started his career as an apprentice at sixteen.", "zh": "他十六歲就開始當學徒。" },
+      { "en": "An apprenticeship usually lasts several years.", "zh": "學徒期通常持續好幾年。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::675b91b57e": {
+    "term": "take it for a spin",
+    "examples": [
+      { "en": "Let's take it for a spin before we decide.", "zh": "我們先試駕一下再決定。" },
+      { "en": "He took the new bike for a spin around the park.", "zh": "他騎新的自行車在公園繞了一圈。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::c6611f0d79": {
+    "term": "bank robbery department",
+    "examples": [
+      { "en": "He was promoted to the bank robbery department.", "zh": "他被升職到銀行搶案部門。" },
+      { "en": "The bank robbery department handles high-profile cases.", "zh": "銀行搶案部門負責高關注度的案件。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::e96813858c": {
+    "term": "partner / boss",
+    "examples": [
+      { "en": "Your partner watches your back; your boss watches your performance.", "zh": "你的搭檔保護你的背後，你的老闆看你的表現。" },
+      { "en": "He just got promoted, so now he's also my boss, not just my partner.", "zh": "他剛升職，所以他現在不只是我搭檔，也是我的老闆。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::263be8e284": {
+    "term": "promotion",
+    "examples": [
+      { "en": "She got a promotion last week.", "zh": "她上週升職了。" },
+      { "en": "A promotion usually means more responsibility.", "zh": "升職通常代表更多的責任。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::28cf38b4f5": {
+    "term": "field work",
+    "examples": [
+      { "en": "Detectives do a lot of field work outside the office.", "zh": "偵探做很多在辦公室外的實地工作。" },
+      { "en": "I prefer field work over staying at my desk all day.", "zh": "我比較喜歡實地工作，不想整天坐辦公桌。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::8602d0b849": {
+    "term": "identification",
+    "examples": [
+      { "en": "Please show some form of identification at the front desk.", "zh": "請在櫃檯出示身分證件。" },
+      { "en": "Witness identification was the key to the case.", "zh": "證人身分確認是這案件的關鍵。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::bb296c6f8e": {
+    "term": "schedule",
+    "examples": [
+      { "en": "Let me check my schedule and get back to you.", "zh": "我查一下行程再回覆你。" },
+      { "en": "We're running behind schedule because of the rain.", "zh": "因為下雨我們進度落後了。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::vocabulary::b27808027e": {
+    "term": "podcast",
+    "examples": [
+      { "en": "I listen to a podcast on my way to work every morning.", "zh": "我每天通勤路上聽 podcast。" },
+      { "en": "There are great English-learning podcasts for free.", "zh": "有很多很棒的英文學習 podcast 是免費的。" }
+    ]
+  },
+  "lesson-006::lesson-006-review::phrase::4f95508d49": {
+    "term": "continue the story",
+    "examples": [
+      { "en": "Let's continue the story next class.", "zh": "我們下堂課繼續這個故事。" },
+      { "en": "She asked the children to continue the story in their own words.", "zh": "她要小朋友用自己的話繼續這個故事。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::dbdac2902f": {
+    "term": "get the ball rolling",
+    "examples": [
+      { "en": "Let's get the ball rolling on the new project.", "zh": "我們開始進行這個新專案吧。" },
+      { "en": "He sent the first email to get the ball rolling.", "zh": "他寄了第一封信讓事情開始動起來。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::bfefe62c6c": {
+    "term": "learn the ropes",
+    "examples": [
+      { "en": "It took me a few months to learn the ropes at this company.", "zh": "我花了幾個月才在這間公司熟悉工作流程。" },
+      { "en": "Don't worry — your manager will help you learn the ropes.", "zh": "別擔心，你的主管會幫你熟悉做法。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::6a67fde1d8": {
+    "term": "green at a job",
+    "examples": [
+      { "en": "I'm still pretty green at this job, so I ask a lot of questions.", "zh": "我在這份工作還很生疏，所以會問很多問題。" },
+      { "en": "Even an experienced engineer feels green at a new job at first.", "zh": "就算是有經驗的工程師，剛到新工作也會覺得生疏。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::aaea7d1409": {
+    "term": "outside of my expertise",
+    "examples": [
+      { "en": "Marketing strategy is outside of my expertise.", "zh": "行銷策略不是我的專業。" },
+      { "en": "I'd rather not answer — that's outside of my expertise.", "zh": "我不太想回答這個，那不是我的專業領域。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::dd67d58419": {
+    "term": "apprentice",
+    "examples": [
+      { "en": "He started as an apprentice in his uncle's bakery.", "zh": "他從他叔叔的麵包店學徒做起。" },
+      { "en": "Many crafts still rely on the apprentice system.", "zh": "許多手工業仍然依賴學徒制度。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::f14c1a72d2": {
+    "term": "master",
+    "examples": [
+      { "en": "She is a master of classical guitar.", "zh": "她是古典吉他的大師。" },
+      { "en": "It takes years to become a master at any skill.", "zh": "要成為任何技能的大師都要花上很多年。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::baa6359a1d": {
+    "term": "habit",
+    "examples": [
+      { "en": "Reading every night is a good habit.", "zh": "每晚閱讀是個好習慣。" },
+      { "en": "Old habits are hard to break.", "zh": "舊習慣很難改。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::45dc366cc7": {
+    "term": "motivation",
+    "examples": [
+      { "en": "Finding the right motivation is half the battle.", "zh": "找到正確的動機就成功了一半。" },
+      { "en": "Money is not always the best motivation.", "zh": "金錢未必是最好的動機。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::66b48b6ed8": {
+    "term": "motivated",
+    "examples": [
+      { "en": "I feel more motivated when I see real progress.", "zh": "看到真的進步時我會更有動力。" },
+      { "en": "She's a highly motivated student.", "zh": "她是個非常有動力的學生。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::5f01b2a4d0": {
+    "term": "gradually",
+    "examples": [
+      { "en": "His English gradually improved over the year.", "zh": "他的英文在這一年裡逐漸進步。" },
+      { "en": "Try to gradually increase the difficulty.", "zh": "試著逐漸提高難度。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::534478d70f": {
+    "term": "funny",
+    "examples": [
+      { "en": "That comedian is really funny.", "zh": "那位喜劇演員真的很好笑。" },
+      { "en": "It's not funny when the joke goes too far.", "zh": "玩笑開過頭就不好笑了。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::2a7ac827cf": {
+    "term": "punchline",
+    "examples": [
+      { "en": "I missed the punchline because I was looking at my phone.", "zh": "我看手機所以錯過了笑點。" },
+      { "en": "A good punchline catches you off guard.", "zh": "好的笑點會讓你猝不及防。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::300334c547": {
+    "term": "science fiction / sci-fi",
+    "examples": [
+      { "en": "I've been into science fiction since high school.", "zh": "我從高中起就很喜歡科幻。" },
+      { "en": "Most sci-fi movies imagine a future with advanced technology.", "zh": "大多數科幻電影都在想像有先進科技的未來。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::0574911f7b": {
+    "term": "genre",
+    "examples": [
+      { "en": "What's your favourite movie genre?", "zh": "你最喜歡的電影類型是什麼？" },
+      { "en": "Science fiction is my favourite genre.", "zh": "科幻是我最愛的類型。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::819b3f32e8": {
+    "term": "audiobook",
+    "examples": [
+      { "en": "I listen to audiobooks while I cook.", "zh": "我邊煮飯邊聽有聲書。" },
+      { "en": "Audiobooks are great for improving listening skills.", "zh": "有聲書很適合用來提升聽力。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::9fa773aa08": {
+    "term": "subtitle",
+    "examples": [
+      { "en": "I usually watch movies with English subtitles.", "zh": "我看電影通常會開英文字幕。" },
+      { "en": "Try to watch without subtitles for a real challenge.", "zh": "試試看不開字幕，挑戰一下自己。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::2d523ef8e6": {
+    "term": "network",
+    "examples": [
+      { "en": "Building a strong network takes years.", "zh": "建立強大的人脈需要好幾年。" },
+      { "en": "She has a wide network in the tech industry.", "zh": "她在科技業有很廣的人脈。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::47681e803b": {
+    "term": "colleague",
+    "examples": [
+      { "en": "I had lunch with a colleague today.", "zh": "我今天跟一位同事吃午餐。" },
+      { "en": "She's a great colleague — always willing to help.", "zh": "她是個很棒的同事，總是樂於幫忙。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::4f703d6fb9": {
+    "term": "classmate",
+    "examples": [
+      { "en": "We were classmates back in high school.", "zh": "我們高中時是同學。" },
+      { "en": "I'm still in touch with a few classmates from college.", "zh": "我還跟幾位大學同學保持聯絡。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::693987e322": {
+    "term": "meetup",
+    "examples": [
+      { "en": "There's a tech meetup downtown every Thursday.", "zh": "市中心每週四都有科技聚會。" },
+      { "en": "I joined a language meetup to practise my English.", "zh": "我參加了一個語言聚會練英文。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::ce90ef592a": {
+    "term": "conversation partner",
+    "examples": [
+      { "en": "I found a conversation partner online to practise English.", "zh": "我在網路上找到一位對話夥伴練英文。" },
+      { "en": "A good conversation partner is patient and curious.", "zh": "好的對話夥伴有耐心又有好奇心。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::e8e526de9a": {
+    "term": "short story",
+    "examples": [
+      { "en": "I read a short story before going to bed.", "zh": "我睡前讀了一篇短篇故事。" },
+      { "en": "Short stories are good for English learners.", "zh": "短篇故事很適合英文學習者。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::5f9328257f": {
+    "term": "novel",
+    "examples": [
+      { "en": "She's writing her first novel.", "zh": "她正在寫她的第一本小說。" },
+      { "en": "That novel was made into a movie last year.", "zh": "那本小說去年被改編成電影。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::8856610134": {
+    "term": "graded reader",
+    "examples": [
+      { "en": "A graded reader is a book written for a specific level.", "zh": "分級讀本是針對特定程度寫的書。" },
+      { "en": "Start with a graded reader before tackling original novels.", "zh": "在挑戰原文小說前，先從分級讀本開始。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::0012e84180": {
+    "term": "recognize",
+    "examples": [
+      { "en": "I didn't recognize him at first.", "zh": "我一開始沒認出他來。" },
+      { "en": "It took me a while to recognize the pattern.", "zh": "我花了一陣子才看出規律。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::861895dda3": {
+    "term": "mental note",
+    "examples": [
+      { "en": "I made a mental note to email him later.", "zh": "我心中記下要晚點寄信給他。" },
+      { "en": "She made a mental note of every name in the room.", "zh": "她把房間裡每個人的名字都記在心裡。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::58c0367f6b": {
+    "term": "correct version",
+    "examples": [
+      { "en": "Make sure you have the correct version of the file.", "zh": "確認你拿到的是檔案的正確版本。" },
+      { "en": "Here's the correct version of the report.", "zh": "這是報告的正確版本。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::7665cb9098": {
+    "term": "familiar",
+    "examples": [
+      { "en": "His face looked familiar but I couldn't remember his name.", "zh": "他的臉看起來很熟，但我想不起名字。" },
+      { "en": "Are you familiar with this software?", "zh": "你熟悉這個軟體嗎？" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::046d04861e": {
+    "term": "strange",
+    "examples": [
+      { "en": "I had a strange dream last night.", "zh": "我昨晚做了個奇怪的夢。" },
+      { "en": "Everything feels strange in a new city.", "zh": "在新城市裡所有事情都讓人陌生。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::d61a1abc14": {
+    "term": "pause",
+    "examples": [
+      { "en": "Pause for a moment to think before answering.", "zh": "回答前先停頓一下思考。" },
+      { "en": "She paused after every important sentence.", "zh": "她在每個重要句子後都會停頓。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::7960c67f36": {
+    "term": "text-to-speech / TTS",
+    "examples": [
+      { "en": "Text-to-speech is useful for learners who want to hear pronunciation.", "zh": "文字轉語音對想聽發音的學習者很有用。" },
+      { "en": "Modern TTS voices sound almost human.", "zh": "現代的 TTS 聲音幾乎像真人。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::81e979a5a0": {
+    "term": "speech-to-text / STT",
+    "examples": [
+      { "en": "Speech-to-text helps me write notes faster.", "zh": "語音轉文字幫我更快寫筆記。" },
+      { "en": "Speech-to-text accuracy has improved a lot in recent years.", "zh": "語音轉文字的準確度近幾年大幅提升。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::50d29b6b4b": {
+    "term": "psychiatrist",
+    "examples": [
+      { "en": "She's been seeing a psychiatrist for her anxiety.", "zh": "她因為焦慮在看精神科醫師。" },
+      { "en": "A psychiatrist can prescribe medication; a therapist usually can't.", "zh": "精神科醫師可以開藥，治療師通常不行。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::b13677d971": {
+    "term": "flashcard",
+    "examples": [
+      { "en": "I review English with flashcards every morning.", "zh": "我每天早上用單字卡複習英文。" },
+      { "en": "Flashcards are simple but very effective.", "zh": "單字卡很簡單但非常有效。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::6119cb679d": {
+    "term": "definition",
+    "examples": [
+      { "en": "Look up the definition if you're not sure.", "zh": "不確定的話就查一下定義。" },
+      { "en": "The dictionary gives a clear definition.", "zh": "字典提供了清楚的定義。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::9a5c9a5f95": {
+    "term": "translation",
+    "examples": [
+      { "en": "The translation is a little different from the original.", "zh": "翻譯跟原文有點不一樣。" },
+      { "en": "I prefer reading without relying on translation.", "zh": "我喜歡讀的時候不要依賴翻譯。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::96692fc167": {
+    "term": "part of speech",
+    "examples": [
+      { "en": "Knowing the part of speech helps you use a word correctly.", "zh": "知道詞性可以幫助你正確使用單字。" },
+      { "en": "Is 'run' a noun or a verb? It depends on the part of speech.", "zh": "'run' 是名詞還是動詞？要看詞性。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::8089d32fca": {
+    "term": "level",
+    "examples": [
+      { "en": "What level are you at in English?", "zh": "你的英文程度在哪個級別？" },
+      { "en": "Pick a book that matches your level.", "zh": "選擇符合你程度的書。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::331ddf7486": {
+    "term": "organise your time",
+    "examples": [
+      { "en": "If you organise your time well, studying feels easier.", "zh": "如果你安排好時間，讀書會輕鬆許多。" },
+      { "en": "It's hard to organise your time when there are too many tasks.", "zh": "任務太多時就很難安排時間。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::vocabulary::e21a31cd34": {
+    "term": "productivity",
+    "examples": [
+      { "en": "Background music sometimes hurts my productivity.", "zh": "背景音樂有時會降低我的生產力。" },
+      { "en": "Short breaks can boost productivity.", "zh": "短暫休息可以提升生產力。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::df7ccd30d3": {
+    "term": "to-do list",
+    "examples": [
+      { "en": "I keep a short to-do list every morning.", "zh": "我每天早上都會列一份短的待辦清單。" },
+      { "en": "Crossing items off a to-do list feels great.", "zh": "在待辦清單上劃掉項目感覺真好。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::63a4e7765a": {
+    "term": "break down a task",
+    "examples": [
+      { "en": "Break down a task into small steps to make it manageable.", "zh": "把任務拆解成小步驟比較容易管理。" },
+      { "en": "She broke down a task and tackled one piece at a time.", "zh": "她把任務拆解後，一次處理一個部分。" }
+    ]
+  },
+  "lesson-007::lesson-007-review::phrase::585bf945d1": {
+    "term": "intensive work",
+    "examples": [
+      { "en": "Pomodoro is great for short bursts of intensive work.", "zh": "番茄鐘很適合短時間的高強度專注工作。" },
+      { "en": "Two hours of intensive work beats six hours of distracted effort.", "zh": "兩小時的高強度工作勝過六小時分心做事。" }
+    ]
+  }
+}
